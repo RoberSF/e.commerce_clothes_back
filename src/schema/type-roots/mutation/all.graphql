@@ -1,0 +1,7 @@
+
+type Mutation {
+
+    "Método para actualizar un campo de todos los registros"
+    updateAllDocuments(collection: String!): Boolean
+
+}

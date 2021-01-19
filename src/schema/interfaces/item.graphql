@@ -1,0 +1,5 @@
+"Item básico para definir las propiedades básicas de los elementos de la API rawg"
+interface Item {
+    id: ID!
+    name: String!
+}

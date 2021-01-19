@@ -1,0 +1,5 @@
+type ResultPaypalCharge implements Result {
+    status: Boolean!
+    message: String!
+    state: String
+}

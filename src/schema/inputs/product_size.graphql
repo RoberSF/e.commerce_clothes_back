@@ -1,0 +1,7 @@
+
+input ProductSizeInput {
+  id: ID
+  productId: ID!
+  sizeId: ID!
+  active: Boolean
+}

@@ -1,0 +1,14 @@
+"Objeto que devuelve paypal"
+type PaypalCharge { 
+    "Id del pago"
+    id: ID!
+    "Cantidad que hemos pagado en euros"
+    amount: Float!
+    "Descripción"
+    description: String!
+    "Método de pago"
+    charge: ID!
+    "Cliente que ha relalizado el pago"
+    customer: ID!
+
+}

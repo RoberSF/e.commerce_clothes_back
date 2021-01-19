@@ -1,0 +1,11 @@
+type MenuUser {
+    title: String
+    submenu: [SubMenu]
+}
+
+type SubMenu {
+    url: String
+    label: String
+    icon: String
+}
+

@@ -1,0 +1,9 @@
+input CustomerInput {
+    "ID del cliente"
+    id: ID,
+    name: String,
+    description: String,
+    email: String,
+    phone: String
+
+}

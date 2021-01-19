@@ -1,0 +1,9 @@
+"Input para añadir los datos del usuario en el registro"
+input ColorInput {
+  "Identificador en este caso no obligatorio"
+  id: ID
+  "Nombre de pila"
+  name: String!
+  "Activo o no activo"
+  active: Boolean
+}

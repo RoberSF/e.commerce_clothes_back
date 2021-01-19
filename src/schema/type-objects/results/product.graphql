@@ -1,0 +1,11 @@
+type ResultProductItem implements Result {
+    info: ResultInfo
+    "Estado de la operación"
+    status: Boolean!
+    "Mensaje de la operación para dar feedback"
+    message: String!
+    "Producto de la tienda seleccionado"
+    product: ProductItem
+    "Lista de productos de la tienda"
+    products: [ProductItem!]
+}

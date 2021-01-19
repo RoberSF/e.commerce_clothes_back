@@ -1,0 +1,6 @@
+type Color {
+    id: ID!
+    name: String!
+    slug: String
+    active: Boolean
+}

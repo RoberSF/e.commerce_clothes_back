@@ -1,0 +1,5 @@
+type Mutation {
+    chargeOrderPaypal(payment: PPInput!, stockChange: [ProductStockInput!]!): ResultPaypalCharge
+}
+
+# ResultPaypalCharge

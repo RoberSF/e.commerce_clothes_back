@@ -1,0 +1,14 @@
+input ProductInput {
+
+    id: ID
+    name: String,
+    categoria: String
+    description: String
+    size: [String!]
+    color: [String!]
+    photo: String
+    price: Float
+    screenshoots: [String!]
+    active: Boolean,
+    stock: Int
+}

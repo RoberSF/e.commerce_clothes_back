@@ -1,0 +1,16 @@
+type Query {
+    "Lista de clientes de stripe"
+    customers(
+        "Para limitar los resultados de 1 a 100"
+        limit: Int = 5,
+        "Para especificar la primera posición posterior a la selección del usuario" 
+        startingAfter: ID = "",
+        "Para terminar antes de este usuario para mostrar los anteriores"
+        endingBefore: ID = ""):ResultStripeCustomer
+
+    "Averiguar detalles del cliente seleccionado"
+    customer(
+        "Id del cliente de Stripe"
+        id: ID! = ""):ResultStripeCustomer
+        
+}

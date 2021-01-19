@@ -1,0 +1,9 @@
+type ProductSize {
+    id: ID
+    productId: ID
+    product: ProductItem
+    sizeId: ID
+    size: Size
+    slug: String
+    active: Boolean
+}

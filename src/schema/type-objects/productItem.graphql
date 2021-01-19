@@ -1,0 +1,17 @@
+type ProductItem {
+    id: ID
+    name: String
+    slug: String
+    categoria: String
+    description: String
+    size: [String]
+    sizeInfo: [Size] 
+    color: [String]
+    colorInfo: [Color]
+    photo: String
+    price: Float
+    rating: Rating
+    screenshoots: [String]
+    active: Boolean
+    stock: Int
+}

@@ -1,0 +1,11 @@
+type ResultColor implements Result {
+    info: ResultInfo
+    "Estado de la operación"
+    status: Boolean!
+    "Mensaje de la operación para dar feedback"
+    message: String!
+    "Información del tag (etiqueta) seleccionado"
+    color: Color
+    "Lista de tags (etiquetas) seleccionadas"
+    colors: [Color!]
+}

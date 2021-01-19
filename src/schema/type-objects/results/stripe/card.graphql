@@ -1,0 +1,9 @@
+type ResultStripeCard implements Result {
+    status: Boolean!
+    message: String!
+    hasMore: Boolean!
+    token: String
+    id: ID
+    card: StripeCard
+    cards: [StripeCard!]
+}

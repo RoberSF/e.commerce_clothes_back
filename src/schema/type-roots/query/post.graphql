@@ -1,0 +1,14 @@
+type Query {
+    "Lista de géneros"
+    posts (
+        "Página seleccionada para acceder a ella"
+        page: Int = 1,
+        "Géneros de los juegos que se obtendrán por página"
+        itemsPerPage: Int = 20,
+        "Especificar el estado del usuario que queremos mostrar"
+        active: ActiveFilterEnum = ACTIVE): ResultPost
+    "Item del género seleccionado"
+    post(
+        "Identificador del género seleccionado"
+        id: ID!): ResultPost
+}

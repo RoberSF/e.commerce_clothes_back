@@ -1,0 +1,6 @@
+input ProductStockInput {
+    "Id del producto de la tienda"
+    id: ID!
+    "Cantidad que aumentará o disminuirá el stock"
+    increment: Int!
+}

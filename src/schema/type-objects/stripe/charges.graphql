@@ -1,0 +1,25 @@
+type StripeCharge { 
+    "Id del pago"
+    id: ID!
+    "Cantidad que hemos pagado en euros"
+    amount: Float!
+    "Estado del pedido"
+    status: String!
+    "Email con el recibo"
+    receiptEmail: String!
+    "Factura con la url asociada sobre el pedido"
+    receiptUrl: String!
+    "Pagado o no pagado"
+    paid: Boolean!
+    "Fecha de pago"
+    created: String!
+    "Tipo de orden"
+    typeOrder: String!
+    "Descripción"
+    description: String!
+    "Método de pago"
+    card: ID!
+    "Cliente que ha relalizado el pago"
+    customer: ID!
+
+}

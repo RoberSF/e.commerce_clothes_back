@@ -1,0 +1,14 @@
+
+type Mutation {
+
+  addProductSize(productSize: ProductSizeInput!): ResultProductSize
+
+#   updateSize(id: ID,size: SizeInput!): ResultSize
+
+#   deleteSize(id: ID!): ResultSize
+
+#   blockSize(id: ID!): ResultSize
+
+#   unBlockSize(id: ID!): ResultSize
+    
+}

@@ -1,0 +1,18 @@
+type Mutation {
+
+    "Para actualizar la información del stcok. Se puede actualizar un producto o más"
+    updateStock(update:  [ProductStockInput!]! ): Boolean
+
+    addProduct(product: ProductInput! ): ResultProductItem
+
+    updateProduct(id: ID!, product: ProductInput!): ResultProductItem
+
+    deleteProduct(productId: ID! ): Boolean
+
+    blockProduct(id: ID!): ResultProductItem
+
+    unBlockProduct(id: ID!): ResultProductItem
+}
+
+
+

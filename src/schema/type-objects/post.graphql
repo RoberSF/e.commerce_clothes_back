@@ -1,0 +1,10 @@
+"Tipo de objeto para almacenar la información de generos de videojuegos"
+type Post {
+    id: ID!
+    title: String!
+    slug: String
+    intro: String!
+    contenido: String!
+    categoria: String!
+    img: String!
+}

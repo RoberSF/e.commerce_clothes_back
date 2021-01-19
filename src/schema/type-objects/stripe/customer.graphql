@@ -1,0 +1,9 @@
+type StripeCustomer {
+    id: ID!
+    name: String!
+    description: String!
+    email: String!
+    defaultSource: ID!
+    currency: String
+    phone: String
+}

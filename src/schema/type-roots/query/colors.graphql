@@ -1,0 +1,14 @@
+
+type Query {
+  "Lista de etiquetas (tags)"
+  colors(
+    "Página seleccionada para acceder a ella"
+    page: Int = 1
+    "Tags (etiquetas) que se obtendrán por página"
+    itemsPerPage: Int = 20
+    "Especificar el estado del tag que queremos mostrar"
+    active: ActiveFilterEnum = ACTIVE
+  ): ResultColor
+  "Item del género seleccionado"
+  color("Identificador de la etiqueta seleccionada" id: ID!): ResultColor
+}

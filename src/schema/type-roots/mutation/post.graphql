@@ -1,0 +1,40 @@
+
+type Mutation {
+    """
+  Acción donde vamos a añadir el tag introducido, seguirá la estructura
+  de los géneros
+  """
+  addPost(
+    post: PostInput!): ResultPost
+#   """
+#   Para actualizar la información del tag especificado con el ID
+#   y así tener ña información actualizada a nuestro gusto con el
+#   nuevo tag
+#   """
+  updatePost(
+    "ID único del tag que queremos actualizar"
+    id: ID!
+    "Nombre del tag con el que vamos a actualizar"
+    post: PostInput!): ResultPost
+#   """
+#   Para borrar el tag. Esta acción no la usaremos, en su lugar para
+#   hacer desaparecer un item correcto, usaremos la función de bloquear
+#   """
+  deletePost("ID único del tag que queremos eliminar" id: ID!): ResultPost
+#   """
+#   Para bloquear/desactivar el tag y clasificarlo como "inactivo" y
+#   no poder utilizarlo
+#   """
+  blockPost(
+    "ID único del tag que queremos bloquear"
+    id: ID!): ResultPost
+
+#   """
+#   Para desbloquear/activar el género y clasificarlo como "activo" y
+#   poder utilizarlo
+#   """
+  unBlockPost(
+    "ID único del tag que queremos bloquear"
+    id: ID!): ResultPost
+    
+}

@@ -1,0 +1,14 @@
+
+type Mutation {
+
+  addColor(color: ColorInput!): ResultColor
+
+  updateColor(id: ID,color: ColorInput!): ResultColor
+
+  deleteColor(id: ID!): ResultColor
+
+  blockColor(id: ID!): ResultColor
+
+  unBlockColor(id: ID!): ResultColor
+    
+}

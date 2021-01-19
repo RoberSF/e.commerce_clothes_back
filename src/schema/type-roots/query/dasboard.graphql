@@ -1,0 +1,5 @@
+
+type Query {
+  "Elementos totales por colección"
+    totalElements(collection: String!): Int
+}

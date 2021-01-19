@@ -1,0 +1,10 @@
+input PostInput {
+    id: ID
+    title: String!
+    intro: String
+    contenido: String
+    categoria: String
+    img: String
+    date: String
+    active: Boolean
+}

@@ -1,0 +1,11 @@
+type ResultInfo {
+    "Página seleccionada"
+    page: Int!,
+    "Número de documentos que corresponde a esa colección "
+    total: Int!,
+    "Número de documentos pos página"
+    itemsPerPage: Int!,
+    "Páginas que contiene el resultado"
+    pages: Int!,
+    
+}
