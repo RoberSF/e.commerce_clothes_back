@@ -1,6 +1,6 @@
 import { IResolvers } from 'graphql-tools';
 import { COLLECTIONS } from '../../config/constants';
-import { findElements, findElementsSub, findOneElement } from '../../lib/db-functions';
+import { findElements, findElementsSearch, findElementsSub, findOneElement } from '../../lib/db-functions';
 import { pagination } from '../../lib/pagination';
 
 
@@ -54,6 +54,25 @@ Query:{
             message: `Post no cargado: ${error}`
         }}
     },
+
+    async postSearch(_, { page, itemsPerPage, active, value}, { db }) {
+
+
+        // ** platform ahora tendría que se run array de strings
+        // console.log(platform);
+        try {
+            return {
+                status: true,
+                message: 'Lista de colores correctamente cargada',
+                posts: await findElementsSearch(db, COLLECTIONS.POSTS, {active: active, name: value})
+            }
+        } catch (error) {
+            return {
+            info: null,
+            status: false,
+            message: `Lista de colores no cargada: ${error}`
+        }}
+       },
 
 }
 }

@@ -1,11 +1,11 @@
 
 type Mutation {
 
-  addProductSize(productSize: ProductSizeInput!): ResultProductSize
+  addProductColor(productColor: ProductColorInput!): ResultProductColor
 
 #   updateSize(id: ID,size: SizeInput!): ResultSize
 
-  deleteProductSize(productId: ID!): ResultProductSize
+  deleteProductColor(productId: ID!): ResultProductColor
 
 #   blockSize(id: ID!): ResultSize
 

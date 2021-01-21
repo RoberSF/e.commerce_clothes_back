@@ -11,4 +11,11 @@ type Query {
     post(
         "Identificador del género seleccionado"
         id: ID!): ResultPost
+
+    postSearch(
+        page: Int = 1
+        itemsPerPage: Int = 20
+        active: ActiveFilterEnum = ACTIVE 
+        value: String): ResultPost
+
 }

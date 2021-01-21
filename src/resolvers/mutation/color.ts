@@ -1,6 +1,6 @@
 import { IResolvers } from 'graphql-tools';
 import { COLLECTIONS } from '../../config/constants';
-import { inserOneElement, findOneElement, asingDocumentId, updateOne, deleteOne } from '../../lib/db-functions';
+import { inserOneElement, findOneElement, asingDocumentId, updateOne, deleteOne, findElementsSearch } from '../../lib/db-functions';
 import slugify from 'slugify';
 
 
@@ -37,8 +37,9 @@ const resolversColorMutation: IResolvers = {
         const colorObject = {
             id: await asingDocumentId(db, COLLECTIONS.COLORS, { id: -1}),
             name: color.name,
-            slug: slugify(color || '', { lower: true }),
-            active: true
+            slug: slugify(color.name || '', { lower: true }),
+            code: color.code,
+            active: color.active || true
         };
 
 
@@ -95,11 +96,12 @@ const resolversColorMutation: IResolvers = {
         const filterColorObjectId = { id: id}
         const objectUpdate = {
             name: color.name,
-            slug: slugify(color || '', { lower: true })
+            code: color.code,
+            slug: slugify(color.name || '', { lower: true })
         };
 
         try {
-            return await updateOne(db,COLLECTIONS.SIZES,filterColorObjectId, objectUpdate)
+            return await updateOne(db,COLLECTIONS.COLORS,filterColorObjectId, objectUpdate)
             .then(
                 result => {
                     // También hay result.n que nos dice el número de elementos que nos devolvió

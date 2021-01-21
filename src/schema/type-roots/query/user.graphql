@@ -17,4 +17,10 @@ type Query {
         password: String!): ResultLogin
     "Autenticarnos mediante token"
     me: ResultUser
+
+    userSearch(
+        page: Int = 1
+        itemsPerPage: Int = 20
+        active: ActiveFilterEnum = ACTIVE 
+        value: String): ResultUsers
 }

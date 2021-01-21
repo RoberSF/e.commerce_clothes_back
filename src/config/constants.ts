@@ -15,6 +15,7 @@ export enum COLLECTIONS {
   PRODUCTS_ITEMS = 'products',
   POSTS = 'posts',
   PRODUCTS_SIZES = 'product_tallas',
+  PRODUCTS_COLORS = 'product_color',
   SIZES= 'tallas',
   COLORS = 'colors'
 }

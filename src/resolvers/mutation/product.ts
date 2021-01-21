@@ -155,6 +155,7 @@ const resolversProductMutation: IResolvers = {
   },
   
   async deleteProduct(_, { id }, { db }) {
+      console.log(id);
   
     if (String(id) === '' || String(id) === undefined) {
         return {

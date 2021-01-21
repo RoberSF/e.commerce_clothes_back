@@ -10,4 +10,11 @@ type Query {
 
 
     productDetails(id: ID!): ResultProductItem
+
+    productSearch(
+        page: Int = 1
+        itemsPerPage: Int = 20
+        active: ActiveFilterEnum = ACTIVE 
+        value: String): ResultProductItem
+
 }

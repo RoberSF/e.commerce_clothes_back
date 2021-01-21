@@ -9,6 +9,14 @@ type Query {
     "Especificar el estado del tag que queremos mostrar"
     active: ActiveFilterEnum = ACTIVE
   ): ResultTag
+
   "Item del género seleccionado"
   tag("Identificador de la etiqueta seleccionada" id: ID!): ResultTag
+
+    tagSearch(
+    page: Int = 1
+    itemsPerPage: Int = 20
+    active: ActiveFilterEnum = ACTIVE 
+    value: String): ResultTag
+
 }

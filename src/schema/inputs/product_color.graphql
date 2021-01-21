@@ -1,0 +1,7 @@
+
+input ProductColorInput {
+  id: ID
+  productId: ID!
+  colorId: ID!
+  active: Boolean
+}

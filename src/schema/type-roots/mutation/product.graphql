@@ -7,7 +7,7 @@ type Mutation {
 
     updateProduct(id: ID!, product: ProductInput!): ResultProductItem
 
-    deleteProduct(productId: ID! ): Boolean
+    deleteProduct(id: ID! ): ResultProductItem
 
     blockProduct(id: ID!): ResultProductItem
 

@@ -1,9 +1,6 @@
 import { IResolvers } from 'graphql-tools';
-import { COLLECTIONS } from '../../config/constants';
-import { inserOneElement, findOneElement, asingDocumentId, updateOne, deleteOne, insertUpdateAll } from '../../lib/db-functions';
-import GenresService from '../../services/genre.service';
-import slugify from 'slugify';
-import { updateLabel } from 'typescript';
+import { insertUpdateAll } from '../../lib/db-functions';
+
 
 
 const resolversAllMutation: IResolvers = {

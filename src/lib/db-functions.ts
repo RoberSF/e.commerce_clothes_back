@@ -171,6 +171,13 @@ export const updateFindOne = async(database: Db, collection: string, filter:obje
 export const deleteOne = async(database: Db, collection: string, filter:object = {}) => {
   return await database.collection(collection).findOneAndDelete(filter)
 }
+//**************************************************************************************************
+//                      Eliminar varios elementos                                                           
+//**************************************************************************************************
+
+export const deleteMany = async(database: Db, collection: string, filter:object = {}) => {
+  return await database.collection(collection).deleteMany(filter)
+}
 
 //**************************************************************************************************
 //                   Contar cuantos elementos hay en una colección                                                           
@@ -355,5 +362,37 @@ export const findElementsSubRandom = async(database: Db, collection: string, arg
   
   export const insertUpdateAll = async (database: Db, collection: string) => {
     return await database.collection(collection).updateMany({}, {$set : {"active":true}})
-};
+  };
+
+  //**************************************************************************************************
+  //                 Método de filtrado para búsqueda component                                                       
+  //**************************************************************************************************
+  export const findElementsSearch = async(database: Db, collection: string, args:any) => {
+
+
+    let filterName = args.name 
+    let filterActive: object = {$ne: false}
+
+    if(args.active === ACTIVE_VALUES_FILTER.INACTIVE ) {
+      filterActive = {$eq: false}
+    }
+    //utilizar un $or // no works por que choca con el $and. Tendría que crear dos objetos diferentes
+    if(args.active === ACTIVE_VALUES_FILTER.ALL ) {
+      filterActive = {$or: [false,true]}
+    }
+    
+
+   let filters = { 
+     $and: [
+       { active: filterActive }, 
+       { name: {$regex: filterName, $options:"$i" } }] 
+   }
+ 
+   let pipeline = [
+     { $match: filters }
+   ]
+ 
+     return await database.collection(collection).aggregate(pipeline).sort({id: -1}).toArray()
+
+    }
 

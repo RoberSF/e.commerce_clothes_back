@@ -6,4 +6,6 @@ input ColorInput {
   name: String!
   "Activo o no activo"
   active: Boolean
+  "codigo referente al proveedor"
+  code: String
 }

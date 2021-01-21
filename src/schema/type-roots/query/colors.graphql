@@ -11,4 +11,10 @@ type Query {
   ): ResultColor
   "Item del género seleccionado"
   color("Identificador de la etiqueta seleccionada" id: ID!): ResultColor
+
+  colorSearch(
+    page: Int = 1
+    itemsPerPage: Int = 20
+    active: ActiveFilterEnum = ACTIVE 
+    value: String): ResultColor
 }

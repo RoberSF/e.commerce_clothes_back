@@ -1,0 +1,12 @@
+type Query {
+
+    productsColors (
+        "Página seleccionada para acceder a ella"
+        page: Int = 1,
+        "Products de la tienda (juegos) que se obtendrán por página"
+        itemsPerPage: Int = 20,
+        "Especificar el estado del product que queremos mostrar"
+        active: ActiveFilterEnum = ACTIVE,
+        "Especificar las platformas seleccionadas"
+        color: [ID!]!): ResultProductColor
+}

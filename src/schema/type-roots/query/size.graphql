@@ -9,6 +9,12 @@ type Query {
     "Especificar el estado del tag que queremos mostrar"
     active: ActiveFilterEnum = ACTIVE
   ): ResultSize
-  "Item del género seleccionado"
+
   size("Identificador de la etiqueta seleccionada" id: ID!): ResultSize
+
+  sizeSearch(
+    page: Int = 1
+    itemsPerPage: Int = 20
+    active: ActiveFilterEnum = ACTIVE 
+    value: String): ResultSize
 }

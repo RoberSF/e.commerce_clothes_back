@@ -94,7 +94,7 @@ const resolversSizeMutation: IResolvers = {
         // En caso contrario que genere el document para insertarlo
         const filterSizeObjectId = { id: id}
         const objectUpdate = {
-            name: size.name,
+            name: size,
             slug: slugify(size || '', { lower: true })
         };
 

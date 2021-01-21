@@ -3,7 +3,7 @@ type Mutation {
 
   addSize(size: SizeInput!): ResultSize
 
-  updateSize(id: ID,size: SizeInput!): ResultSize
+  updateSize(id: ID!,size: String!): ResultSize
 
   deleteSize(id: ID!): ResultSize
 

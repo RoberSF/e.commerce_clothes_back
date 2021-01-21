@@ -3,7 +3,7 @@ import { IResolvers } from 'graphql-tools';
 import { COLLECTIONS } from '../../config/constants';
 import JWT from '../../lib/jwt';
 import bcrypt from 'bcrypt';
-import { findOneElement,findElementsSub } from '../../lib/db-functions';
+import { findOneElement,findElementsSub, findElementsSearch } from '../../lib/db-functions';
 import { pagination } from '../../lib/pagination';
 import UserService from '../../services/user.service';
 
@@ -76,7 +76,7 @@ const resolversUsersQuery: IResolvers = {
      },
 
 
-    me(_, __, { token }) {
+    async me(_, __, { token }) {
 
       let info = new JWT().verify(token); 
       if (info === MESSAGES.TOKEN_VERICATION_FAILED) {
@@ -92,6 +92,25 @@ const resolversUsersQuery: IResolvers = {
         user: Object.values(info)[0], 
         menu: new UserService().obtenerMenu(Object.values(info)[0].role)
       };
+    },
+
+    async userSearch(_, { page, itemsPerPage, active, value}, { db }) {
+
+
+      // ** platform ahora tendría que se run array de strings
+      // console.log(platform);
+      try {
+          return {
+              status: true,
+              message: 'Lista de usuarios correctamente cargada',
+              users: await findElementsSearch(db, COLLECTIONS.USERS, {active: active, name: value})
+          }
+      } catch (error) {
+          return {
+          info: null,
+          status: false,
+          message: `Lista de usuarios no cargada: ${error}`
+      }}
     },
     
    },

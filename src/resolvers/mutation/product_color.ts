@@ -4,14 +4,14 @@ import { inserOneElement, findOneElement, asingDocumentId, updateOne, deleteOne,
 import slugify from 'slugify';
 
 
-const resolversProductSizeMutation: IResolvers = {
+const resolversProductColorMutation: IResolvers = {
 
   Mutation: {
     
-    async addProductSize(_, { productSize }, { db }) {
+    async addProductColor(_, { productColor }, { db }) {
 
         // Comprobar que no está en blanco ni es indefinido. Podríamos refactorizar para hacerlo común en un servicio
-        if (productSize === '' || productSize === undefined) {
+        if (productColor === '' || productColor === undefined) {
             return {
                 status: false,
                 message: `No se ha especificado correctamente`,
@@ -20,9 +20,9 @@ const resolversProductSizeMutation: IResolvers = {
         };
 
         // Comprobar que no existe
-        if (productSize){
+        if (productColor){
             // filtrar por id de talla y de producto
-            const productSizeCheck = await findOneElement(db,COLLECTIONS.PRODUCTS_SIZES,{productId: productSize.productId, sizeId: productSize.sizeId })
+            const productSizeCheck = await findOneElement(db,COLLECTIONS.PRODUCTS_SIZES,{productId: productColor.productId, sizeId: productColor.sizeId })
             
             if (productSizeCheck !== null) {
                 return {
@@ -35,16 +35,16 @@ const resolversProductSizeMutation: IResolvers = {
     
 
         // En caso contrario que tag el document para insertarlo
-        const productSizeObject = {
+        const productColorObject = {
             id: await asingDocumentId(db, COLLECTIONS.PRODUCTS_SIZES, { id: -1}),
-            productId: productSize.productId,
-            sizeId: productSize.sizeId,
+            productId: productColor.productId,
+            sizeId: productColor.sizeId,
             active: true
         };
 
 
         try {
-            return await inserOneElement(db,COLLECTIONS.PRODUCTS_SIZES,productSizeObject)
+            return await inserOneElement(db,COLLECTIONS.PRODUCTS_SIZES,productColorObject)
             .then(
                 result => {
                     // También hay result.n que nos dice el número de elementos que nos devolvió
@@ -52,7 +52,7 @@ const resolversProductSizeMutation: IResolvers = {
                         return {
                             status: true,
                             message: `Se registró correctamente`,
-                            product: productSizeObject
+                            product: productColorObject
                           };
                     }
                     return {
@@ -71,31 +71,32 @@ const resolversProductSizeMutation: IResolvers = {
         }
     },
 
-    async deleteProductSize(_, { productId }, { db }) {
+    async deleteProductColor(_, { productId }, { db }) {
 
+        console.log(productId);
         if (String(productId) === '' || String(productId) === undefined) {
             return {
                 status: false,
-                message: `El ${productId} de producto por talla no se ha especificado correctamente`,
+                message: `El ${productId} de producto por color no se ha especificado correctamente`,
                 product: null
             }
         };
 
         try {
-            return await deleteMany(db,COLLECTIONS.PRODUCTS_SIZES,{productId: productId})
+            return await deleteMany(db,COLLECTIONS.PRODUCTS_COLORS,{productId: productId})
             .then(
                 result => {
                     // También hay result.n que nos dice el número de elementos que nos devolvió
                     if (result.result.ok === 1) {
                         return {
                             status: true,
-                            message: `El size con id: ${productId} se borró correctamente`,
+                            message: `El el producto con color ${productId} se borró correctamente`,
                             product: null
                           };
                     }
                     return {
                         status: false,
-                        message: `Error al borrar producto por talla. Inténtalo de nuevo por favor.`,
+                        message: `Error al borrar producto por color. Inténtalo de nuevo por favor.`,
                         product: null
                     }
  
@@ -103,7 +104,7 @@ const resolversProductSizeMutation: IResolvers = {
         } catch(error) {
             return {
                 status: false,
-                message: `Error inesperado al borrar producto por talla. Inténtalo de nuevo por favor.`,
+                message: `Error inesperado al borrar item. Inténtalo de nuevo por favor.`,
                 product: null
             }
         }
@@ -163,7 +164,6 @@ const resolversProductSizeMutation: IResolvers = {
     //         }
     //     }
     // },
-
 
 
     // async blockSize(_, { id }, { db }) {
@@ -263,4 +263,4 @@ const resolversProductSizeMutation: IResolvers = {
 
 
 
-export default resolversProductSizeMutation
+export default resolversProductColorMutation

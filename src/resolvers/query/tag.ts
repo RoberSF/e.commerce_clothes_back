@@ -1,6 +1,6 @@
 import { IResolvers } from 'graphql-tools';
 import { COLLECTIONS } from '../../config/constants';
-import { findElementsSub, findOneElement } from '../../lib/db-functions';
+import { findElementsSearch, findElementsSub, findOneElement } from '../../lib/db-functions';
 import { pagination } from '../../lib/pagination';
 
 
@@ -51,7 +51,26 @@ async tag(_, {id}, {db}) {
         message: `Tag no cargado: ${error}`
     }}
 },
-    }
+
+async tagSearch(_, { page, itemsPerPage, active, value}, { db }) {
+
+
+    // ** platform ahora tendría que se run array de strings
+    // console.log(platform);
+    try {
+        return {
+            status: true,
+            message: 'Lista de tags correctamente cargada',
+            tags: await findElementsSearch(db, COLLECTIONS.TAGS, {active: active, name: value})
+        }
+    } catch (error) {
+        return {
+        info: null,
+        status: false,
+        message: `Lista de tags no cargada: ${error}`
+    }}
+   },
+}
 };
 
 export default resolversTagQuery;

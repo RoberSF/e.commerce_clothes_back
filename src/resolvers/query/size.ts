@@ -1,6 +1,6 @@
 import { IResolvers } from 'graphql-tools';
 import { COLLECTIONS } from '../../config/constants';
-import { findElementsSub, findOneElement } from '../../lib/db-functions';
+import { findElementsSearch, findElementsSub, findOneElement } from '../../lib/db-functions';
 import { pagination } from '../../lib/pagination';
 
 
@@ -51,8 +51,32 @@ async size(_, {id}, {db}) {
         message: `Talla no cargada: ${error}`
     }}
 },
-    }
+
+async sizeSearch(_, { page, itemsPerPage, active, value}, { db }) {
+
+    console.log(active,value );
+
+    // ** platform ahora tendría que se run array de strings
+    // console.log(platform);
+    try {
+        return {
+            status: true,
+            message: 'Lista de tallas correctamente cargada',
+            sizes: await findElementsSearch(db, COLLECTIONS.SIZES, {active: active, name: value})
+        }
+    } catch (error) {
+        return {
+        info: null,
+        status: false,
+        message: `Lista de tallas no cargada: ${error}`
+    }}
+   },
+
+
+}
 };
+
+
 
 export default resolversSizeQuery;
 

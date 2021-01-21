@@ -1,0 +1,9 @@
+type ProductColor {
+    id: ID
+    productId: ID
+    product: ProductItem
+    colorId: ID
+    color: Color
+    slug: String
+    active: Boolean
+}

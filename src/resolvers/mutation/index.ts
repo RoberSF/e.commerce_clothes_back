@@ -10,6 +10,7 @@ import resolversPostMutation from './post';
 import resolversSizeMutation from './size';
 import resolversColorMutation from './color';
 import resolversProductSizeMutation from './product_size';
+import resolversProductColorMutation from './product_color';
 
 const mutationResolvers = GMR.merge([
     resolversUserMutation,
@@ -22,7 +23,8 @@ const mutationResolvers = GMR.merge([
     resolversPostMutation,
     resolversSizeMutation,
     resolversColorMutation,
-    resolversProductSizeMutation
+    resolversProductSizeMutation,
+    resolversProductColorMutation
 ]);
 
 export default mutationResolvers

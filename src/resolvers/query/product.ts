@@ -1,7 +1,7 @@
 import { IResolvers } from 'graphql-tools';
 import { pagination } from '../../lib/pagination';
 import { COLLECTIONS } from '../../config/constants';
-import { findElements, findOneElement, findElementsSub } from '../../lib/db-functions';
+import { findElements, findOneElement, findElementsSub, findElementsSearch } from '../../lib/db-functions';
 
 const resolversProductsQuery: IResolvers = {
 
@@ -65,6 +65,48 @@ const resolversProductsQuery: IResolvers = {
             info: null,
             status: false,
             message: `Lista de ropa por tallas no cargada: ${error}`
+        }}
+    },
+
+    async productsColors(_, { page, itemsPerPage, active, color}, { db }) {
+
+        try {
+            const paginationData = await pagination(db, COLLECTIONS.PRODUCTS_COLORS, page, itemsPerPage);
+            return {
+                info: {
+                    page: paginationData.page, 
+                    pages:paginationData.pages, 
+                    total: paginationData.total,
+                    itemsPerPage: paginationData.itemsPage
+                        },
+                status: true,
+                message: 'Lista de ropa por colores correctamente cargada',
+                products: await findElementsSub(db, COLLECTIONS.PRODUCTS_COLORS, {active: active, colorId: color}, paginationData)
+            }
+        } catch (error) {
+            return {
+            info: null,
+            status: false,
+            message: `Lista de ropa por colores no cargada: ${error}`
+        }}
+    },
+
+    async productSearch(_, { page, itemsPerPage, active, value}, { db }) {
+
+
+        // ** platform ahora tendría que se run array de strings
+        // console.log(platform);
+        try {
+            return {
+                status: true,
+                message: 'Lista de productos correctamente cargada',
+                products: await findElementsSearch(db, COLLECTIONS.PRODUCTS_ITEMS, {active: active, name: value})
+            }
+        } catch (error) {
+            return {
+            info: null,
+            status: false,
+            message: `Lista de productos no cargada: ${error}`
         }}
        },
   }
