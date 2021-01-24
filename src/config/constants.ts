@@ -6,6 +6,7 @@ if (process.env.NODE_ENV !== 'production') {
   const env = environment;
 }
 
+
 export const SECRET_KEY =
   process.env.SECRET || 'MEANgraphqlRober';
 

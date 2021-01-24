@@ -1,0 +1,27 @@
+type File {
+    id: ID
+    path: String
+    filename: String
+    mimetype: String
+    publicId: String
+    createdAt: String
+    url: String
+    bytes: Int
+    width: Int
+    height: Int
+}
+
+type S3Object {
+    ETag: String
+    Location: String!
+    Key: String!
+    Bucket: String!
+}
+
+type UploadedFileResponse {
+      filename: String!
+      mimetype: String!
+      encoding: String!
+      url: String!
+    }
+

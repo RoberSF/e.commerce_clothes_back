@@ -10,5 +10,10 @@ type Mutation {
   blockColor(id: ID!): ResultColor
 
   unBlockColor(id: ID!): ResultColor
-    
+
+  # singleUpload(file: Upload!): S3Object
+
+  # singleUpload(file: Upload!): UploadedFileResponse! // Mutation con AWS
+
+  singleUpload(file: Upload!): File
 }

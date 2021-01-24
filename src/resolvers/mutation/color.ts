@@ -1,8 +1,15 @@
 import { IResolvers } from 'graphql-tools';
 import { COLLECTIONS } from '../../config/constants';
-import { inserOneElement, findOneElement, asingDocumentId, updateOne, deleteOne, findElementsSearch } from '../../lib/db-functions';
+import { inserOneElement, findOneElement, asingDocumentId, updateOne, deleteOne } from '../../lib/db-functions';
 import slugify from 'slugify';
+import { AWSS3Uploader } from '../../aws'
+import { processUpload } from '../../lib/upload';
 
+const s3Uploader = new AWSS3Uploader({ 
+    accessKeyId: "AKIAIODV7XOWOLB34XIQ",
+    secretAccessKey: "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",
+    destinationBucketName: 'shopclothes'
+  });
 
 const resolversColorMutation: IResolvers = {
 
@@ -257,8 +264,79 @@ const resolversColorMutation: IResolvers = {
                 color: null
             }
         }
+    },
+
+    // async singleUpload(_, {file}) {
+
+    //     const { createReadStream, filename } = await file;
+
+    //     aws.config.update({
+    //         accessKeyId: process.env.AWS_ACCESS_ID,
+    //         secretAccessKey: process.env.AWS_SECRET_KEY,
+    //         region: process.env.AWS_REGION,
+    //       });
+    //     const s3 = new aws.S3({ region: process.env.AWS_REGION });
+    //     const s3DefaultParams = {
+    //         ACL: 'public-read',
+    //         Bucket: process.env.S3_BUCKET_NAME,
+    //         Conditions: [
+    //           ['content-length-range', 0, 1024000], // 1 Mb
+    //           { acl: 'public-read' },
+    //         ],
+    //       };
+          
+    //       const key = 'rob';
+    //     return new Promise((resolve, reject) => {
+    //         s3.upload(
+    //           {
+    //             ...s3DefaultParams,
+    //             Body: createReadStream(),
+    //             Key: `${key}/${filename}`,
+    //           },
+    //           (err:any, data:any) => {
+    //             if (err) {
+    //               console.log('error uploading...', err);
+    //               reject(err);
+    //             } else {
+    //               console.log('successfully uploaded file...', data);
+    //               resolve(data);
+    //             }
+    //           },
+    //         );
+    //       });
+
+    // }
+    // async singleUpload(_, {file}) {
+    // }
+
+    //singleUpload: s3Uploader.singleFileUploadResolver.bind(s3Uploader)
+
+    // async singleUpload(_, {file}) {
+
+    //     console.log(file)
+
+    //     const { createReadStream, filename, mimetype } = await file;
+
+    //     const stream = fs.createReadStream(filename);
+
+    //     const pathObj:any = await  new UploadService().storeFS(stream, filename)
+    //     console.log(pathObj);
+
+    //     const fileLocation = pathObj.path;
+
+    //     const fileRes = {
+    //         id: '',
+    //         filename
+    //     }
+    //     console.log(fileRes);
+    //     return fileRes;
+    // }
+
+    singleUpload: (_, { file }, { cloudinary }) => processUpload(file, cloudinary)
+
     }
-    }
+
+    
   }
 
 

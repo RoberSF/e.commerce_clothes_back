@@ -9,6 +9,8 @@ import schema from './schema';
 import expressPlayground from 'graphql-playground-middleware-express';
 import Database from './lib/database';
 import chalk from 'chalk';
+import fileUpload from 'express-fileupload'
+
 
 /* ***************************************************************************************/
 // Configuración de las variables de entorno (lectura)
@@ -35,6 +37,11 @@ async function init() {
 
     app.use(compression());
 
+    // app.use(graphqlUploadExpress({ maxFileSize: 1000000000, maxFiles: 10 }));
+
+
+
+    
 
 /* ***************************************************************************************/
 //                     Conexión a mongoDB que está configurado en la clase Database
@@ -44,10 +51,13 @@ async function init() {
 
     // Es una función asíncrona por tanto tenemos que esperar a que se resuelva para seguir con el código
     const db = await database.init();  // Conexión a mongo
+      
 
-
-
-
+    const uploadConfig = {
+    // https://github.com/jaydenseric/graphql-upload#type-uploadoptions
+    maxFileSize: 1000000000, // 10 MB
+    maxFiles: 10
+}; 
     const context = async({req, connection}: IContext) => { // Typescript nos obliga a crear la interface a causa del tipado
         const token = (req) ? req.headers.authorization : connection.authorization;
         // return { db, token, pubsub};
@@ -59,8 +69,9 @@ async function init() {
 //**************************************************************************************** */
 
     const server = new ApolloServer({
-        schema, // Hace referencia al index.ts de la carpeta squema
+        schema,// Hace referencia al index.ts de la carpeta squema
         introspection: true, // Para que se pueda ver la info en el playground
+        uploads: uploadConfig,
         // context: {db} // Así recibimos directamente toda la info
         context
     });
@@ -71,7 +82,7 @@ async function init() {
         endpoint: '/graphql' // endpoint es la url a donde hago las llamadas
     }));
 
-
+    app.use(fileUpload({ useTempFiles: true }))
 
 
     const httpServer = createServer(app);
