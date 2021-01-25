@@ -13,7 +13,11 @@ type Mutation {
 
   # singleUpload(file: Upload!): S3Object
 
-  # singleUpload(file: Upload!): UploadedFileResponse! // Mutation con AWS
+  # singleUpload(file: Upload!): UploadedFileResponse! // Mutation para AWS 
 
-  singleUpload(file: Upload!): File
+  # singleUpload(file: Upload!): File // Mutation normal 
+
+  # Mutation que devuelve boolean
+  singleUpload(file: Upload): Boolean 
+
 }

@@ -10,6 +10,10 @@ import expressPlayground from 'graphql-playground-middleware-express';
 import Database from './lib/database';
 import chalk from 'chalk';
 import fileUpload from 'express-fileupload'
+import { v4 as uuidv4 } from 'uuid';
+import fs from 'fs';
+import { cloudinaryUpload, aws } from './lib/upload';
+import response from 'express'
 
 
 /* ***************************************************************************************/
@@ -83,6 +87,49 @@ async function init() {
     }));
 
     app.use(fileUpload({ useTempFiles: true }))
+
+    app.put('/upload', (request:any, response:any) => {
+
+        var archivo = request.files.imagen;
+        var nombreCortado = archivo.name.split('.') // con esto consigo la extension. Divide por cada punto que encuentre, pero sabemos que el ultimo(split) es la extension
+        var extensionArchivo = nombreCortado[nombreCortado.length - 1]
+
+        var fileName = `${uuidv4()}.${extensionArchivo}`
+
+        let path = (`./uploads/${fileName}`); // los parentesis son obligatorios
+
+
+        archivo.mv(path, (err:any) => {
+
+            if (err) {
+                console.log(err);
+                    return response.status(500).json({
+                        ok: false,
+                        mensaje: 'Error al mover archivo',
+                        errors: err
+                    });
+            }
+
+            response.json({
+                ok: true,
+                message: 'Imagen subida'
+            }) 
+
+        })
+
+
+
+        console.log(path);
+        console.log(`C:/Users/usuario/Desktop/Programacion/e-commerce - ropa/BackEnd/backend-meang-publi-online-shop/uploads/${fileName}`);
+        console.log(fs.existsSync(`C:/Users/usuario/Desktop/Programacion/e-commerce - ropa/BackEnd/backend-meang-publi-online-shop/uploads/${fileName}`));
+        
+        //aws(fileName);
+        cloudinaryUpload(fileName);
+        
+    })
+
+
+
 
 
     const httpServer = createServer(app);
