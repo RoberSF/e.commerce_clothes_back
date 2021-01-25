@@ -4,6 +4,7 @@ const app = express();
 const fileUpload = require('express-fileupload'); // librería para subir archivos
 const fs = require('fs'); // para borrar archivos
 const path = require('path');
+import { v4 as uuidv4 } from 'uuid';
 
 
 
@@ -16,78 +17,39 @@ app.use(fileUpload({ useTempFiles: true })); //actualización
 
 
 // ********************RUTAS*******************************
-app.put('/upload', (request:any, response:any) => { // el tipo y el id son para asignarles el nombre al archivo. 
-
-console.log(request.files);
-
-    if (!request.files) {
-        return response.status(400).json({
-            ok: false,
-            mensaje: 'No files'
-        })
-    }
-
-
-    // Obtener nombre del archivo para verificar que es una imagen
+app.put('/upload', (request:any, response:any) => {
 
     var archivo = request.files.imagen;
     var nombreCortado = archivo.name.split('.') // con esto consigo la extension. Divide por cada punto que encuentre, pero sabemos que el ultimo(split) es la extension
-    var extensionArchivo = nombreCortado[nombreCortado.length - 1] //cogemos la ultima palabra del array de nombreCortado
+    var extensionArchivo = nombreCortado[nombreCortado.length - 1]
 
-    // Solo aceptamos estas extensiones
+    var fileName = `${uuidv4()}.${extensionArchivo}`
 
-    var extensionesValidas = ['png', 'jpg', 'gif', 'jpeg'];
+    let path = (`./uploads/${fileName}`); // los parentesis son obligatorios
 
-    if (extensionesValidas.indexOf(extensionArchivo) < 0) {
-        return response.status(400).json({
-            ok: false,
-            mensaje: 'Extension no valida'
-        })
-    }
-
-    // Nombre de archivo personalizado para que no haya conflictos. Podemos hacerlo de la manera que queramos
-    // el nombre será el id - un numero random.la extensión
-
-    let newNameFile = `${new Date().getMilliseconds()}.${extensionArchivo}`;
-
-
-    // Muevo el archivo del limbo temporal a un path donde yo lo quiero
-
-    let path = (`./uploads/${newNameFile}`); // los parentesis son obligatorios
 
     archivo.mv(path, (err:any) => {
 
         if (err) {
-            return response.status(500).json({
-                ok: false,
-                mensaje: 'Error al mover archivo',
-                errors: err
-            });
+            console.log(err);
+                return response.status(500).json({
+                    ok: false,
+                    mensaje: 'Error al mover archivo',
+                    errors: err
+                });
         }
-        subirPorTipo(newNameFile, response);
+
+       response.json({
+            ok: true,
+            message: 'Imagen subida'
+        }) 
+
     })
-
-
-
-
-});
-
-
-
-
-
-function subirPorTipo(newNameFile:any, response:any) {
-
-
-
-            // var pathViejo = './uploads/usuarios/' + usuario.img;
-            var pathViejo = path.resolve(__dirname, `./uploads`); //actualización
-
-            // si existe img, elimina la imagen
-            if (fs.existsSync(pathViejo)) {
-                fs.unlink(pathViejo, () => {}); // me tirraba error si no le ponía el callback 
-            }
-    }
+    
+    //aws(fileName);
+    //cloudinaryUpload(fileName);
+    
+})
 
 
 

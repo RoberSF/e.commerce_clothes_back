@@ -74,6 +74,36 @@ export const deleteImage = async (image_reference: string, cloudinary: any) => {
 };
 
 
+export const mv = async (file:any) => {
+
+    var fileSplit = file.name.split('.');
+    var extensionFile = fileSplit[fileSplit.length - 1];
+    var fileName = `${uuidv4()}.${extensionFile}`;
+    let path = (`./uploads/${fileName}`);
+
+    //validaciones
+
+    file.mv(path, async (err:any) => {
+
+        if (err) {
+            console.log('if',err);
+            return {
+                status: false,
+                message: 'Subida fallida en el server local'
+            }
+        }
+    
+    })
+
+    return { status: true, message: 'Continua con la cloud'}
+    //aws(fileName);
+    //cloudinaryUpload(fileName)
+
+
+    
+}
+
+
 export const aws = async (fileName:any) => {
 
     AWS.config.update({
@@ -95,15 +125,23 @@ export const aws = async (fileName:any) => {
         //handle error
         if (err) {
           console.log("Error", err);
+          return {
+              status: false,
+              massage: err
+          }
         }
       
         //success
         if (data) {
           console.log("Uploaded in:", data.Location);
+          fs.unlink(`C:/Users/usuario/Desktop/Programacion/e-commerce - ropa/BackEnd/backend-meang-publi-online-shop/uploads/${fileName}`, () => {});
+          return {
+              status: true,
+              message: data.Location
+          }
         }
       });
 
-      fs.unlink(`C:/Users/usuario/Desktop/Programacion/e-commerce - ropa/BackEnd/backend-meang-publi-online-shop/uploads/${fileName}`, () => {});
 }
 
 export const cloudinaryUpload = async(fileName:any) => {
@@ -116,12 +154,27 @@ export const cloudinaryUpload = async(fileName:any) => {
       });
 
     cloudinary.v2.uploader.upload(`C:/Users/usuario/Desktop/Programacion/e-commerce - ropa/BackEnd/backend-meang-publi-online-shop/uploads/${fileName}`,
-          function(error:any, result:any) {console.log(result, error)});
+          function(error:any, result:any) 
+          {
+              if(result) {
+                fs.unlink(`C:/Users/usuario/Desktop/Programacion/e-commerce - ropa/BackEnd/backend-meang-publi-online-shop/uploads/${fileName}`, () => {});
+                return {
+                    status: true,
+                    message: result
+                }
+              }
 
-    fs.unlink(`C:/Users/usuario/Desktop/Programacion/e-commerce - ropa/BackEnd/backend-meang-publi-online-shop/uploads/${fileName}`, () => {});
+              return {
+                  status: false,
+                  message: error
+              }
+          }
+        );
+
+    
     
 
     //const result = await cloudinary.v2.uploader.upload(path, {folder: process.env.PRINCIPAL_FOLDER_CLOUDINARY});
-    }
+}
 
     
