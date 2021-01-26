@@ -86,15 +86,16 @@ async function init() {
 
     app.use(fileUpload({ useTempFiles: true }))
 
-    app.put('/upload',async  (request:any, response:any) => {
+    app.put('/upload', (request:any, response:any) => {
 
         var file = request.files.imagen;
+        var type = request.params.type || 'color';
+        var id = request.params.id || '1'
 
-        const mvSave = await mv(file)
-
-        if(mvSave.status ) {
-            return { mvSave}
-        }
+        const mvSave = mv(file, type, id)
+        // .then( (result:any) => {
+        //     console.log(result);
+        // })
        
         
     })

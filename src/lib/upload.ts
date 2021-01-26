@@ -2,6 +2,9 @@ import fs from 'fs';
 import mkdirp from 'mkdirp';
 import { v4 as uuidv4 } from 'uuid';
 var cloudinary = require('cloudinary');
+const UPLOAD_DIR = './uploads';
+import AWS from 'aws-sdk';
+import { AnyARecord } from 'dns';
 
 /**
  * Almacenar la información en el patch especificado
@@ -29,8 +32,7 @@ const storeFyleSystem = ({ stream, filename }: any, userId: string) => {
 };
 
 /** Directorio donde se va a subir las imágenes temporalmente antes de enviarlas al servicio Cloudinary*/
-const UPLOAD_DIR = './uploads';
-import AWS from 'aws-sdk';
+
 
 
 export const processUpload = async (upload: any, cloudinary: any) => {
@@ -74,77 +76,140 @@ export const deleteImage = async (image_reference: string, cloudinary: any) => {
 };
 
 
-export const mv = async (file:any) => {
+export const mv = (file:any, type:any, id:any) => {
+
+    return new Promise(function(resolve, reject){
+
 
     var fileSplit = file.name.split('.');
     var extensionFile = fileSplit[fileSplit.length - 1];
     var fileName = `${uuidv4()}.${extensionFile}`;
     let path = (`./uploads/${fileName}`);
+    let typesAvailable = ['color', 'product'];
+    var extensionFile = fileSplit[fileSplit.length - 1];
+    var extensionAvailable = ['png', 'jpg', 'gif', 'jpeg'];
 
     //validaciones
 
-    file.mv(path, async (err:any) => {
-
-        if (err) {
-            console.log('if',err);
-            return {
-                status: false,
-                message: 'Subida fallida en el server local'
-            }
+    if (!file) {
+        return {
+            status: false,
+            mensaje: 'No files'
         }
+    }
+
+    if (typesAvailable.indexOf(type) < 0) {
+        return {
+            ok: false,
+            mensaje: 'tipos de colección no válidos',
+            errors: { message: 'Tipo de colección no es válida' }
+        };
+    }
+
+    if (extensionAvailable.indexOf(extensionFile) < 0) {
+        return {
+            ok: false,
+            mensaje: 'Extension no valida'
+        }
+    }
+
     
+
+        file.mv(path, async (err:any) => {
+
+            if (err) {
+                console.log('if',err);
+                return {
+                    status: false,
+                    message: 'Subida fallida en el server local'
+                }
+            }
+        
+            const awsResult =  aws(fileName, type).then( (result:any) => {
+
+                // Subir desde aquí a mongo, tengo el enlace en el result y tengo el id en los params.
+                // return resolve({
+                //     tatus: true,
+                //     message: result.message
+                // })
+            })
+
+    
+        })
+    // Fin de la promesa
+    })
+        //cloudinaryUpload(fileName, type)
+
+}
+
+
+export const aws = (fileName:any, type:any) => {
+
+    return new Promise( function(resolve, reject) {
+
+        let key = `${type}/` + fileName
+
+        AWS.config.update({
+            accessKeyId: "AKIAJOJUP4HVSBUZGA5A",
+            secretAccessKey: "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",
+            region: 'eu-central-1' 
+        });
+    
+        var params = {
+            Bucket : 'shopclothes',
+            Body   : fs.createReadStream(`C:/Users/usuario/Desktop/Programacion/e-commerce - ropa/BackEnd/backend-meang-publi-online-shop/uploads/${fileName}`),
+            Key    : "try/" + uuidv4() + "_", // crear carpetas acordes y añadir key
+            ACL    : 'public-read'
+          };
+    
+        const uploadAWS = upload(params,fileName).then( (result:any) => {
+            return resolve({
+                tatus: true,
+                message: result.message
+            })
+        })
+
     })
 
-    return { status: true, message: 'Continua con la cloud'}
-    //aws(fileName);
-    //cloudinaryUpload(fileName)
 
+
+
+}
+
+export const upload = (params:any, fileName:any ) => {
+
+    return new Promise(function(resolve, reject) {
+
+        var s3 = new AWS.S3();
 
     
+        s3.upload(params, function (err:any, data:any) {
+
+
+            //handle error
+            if (err) {
+                console.log("Error", err);
+                return reject({
+                    status: false,
+                    massage: err
+                });
+              }
+
+                          //success
+            if (data) {
+                fs.unlink(`C:/Users/usuario/Desktop/Programacion/e-commerce - ropa/BackEnd/backend-meang-publi-online-shop/uploads/${fileName}`, () => {});
+                return resolve({
+                    status: true,
+                    message: data.Location
+                })
+              }
+
+            })
+    
+          })
 }
 
-
-export const aws = async (fileName:any) => {
-
-    AWS.config.update({
-        accessKeyId: "AKIAJOJUP4HVSBUZGA5A",
-        secretAccessKey: "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",
-        region: 'eu-central-1' 
-    });
-
-    var params = {
-        Bucket : 'shopclothes',
-        Body   : fs.createReadStream(`C:/Users/usuario/Desktop/Programacion/e-commerce - ropa/BackEnd/backend-meang-publi-online-shop/uploads/${fileName}`),
-        Key    : "try/" + uuidv4() + "_",
-        ACL    : 'public-read'
-      };
-
-      var s3 = new AWS.S3();
-
-      s3.upload(params, function (err:any, data:any) {
-        //handle error
-        if (err) {
-          console.log("Error", err);
-          return {
-              status: false,
-              massage: err
-          }
-        }
-      
-        //success
-        if (data) {
-          console.log("Uploaded in:", data.Location);
-          fs.unlink(`C:/Users/usuario/Desktop/Programacion/e-commerce - ropa/BackEnd/backend-meang-publi-online-shop/uploads/${fileName}`, () => {});
-          return {
-              status: true,
-              message: data.Location
-          }
-        }
-      });
-
-}
-
-export const cloudinaryUpload = async(fileName:any) => {
+export const cloudinaryUpload = async(fileName:any, type:any) => {
 
 
     cloudinary.config({ 
