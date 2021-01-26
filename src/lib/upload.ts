@@ -78,74 +78,71 @@ export const deleteImage = async (image_reference: string, cloudinary: any) => {
 
 export const mv = (file:any, type:any, id:any) => {
 
-    return new Promise(function(resolve, reject){
+    return new Promise(function(resolve, reject) {
 
-
-    var fileSplit = file.name.split('.');
-    var extensionFile = fileSplit[fileSplit.length - 1];
-    var fileName = `${uuidv4()}.${extensionFile}`;
-    let path = (`./uploads/${fileName}`);
-    let typesAvailable = ['color', 'product'];
-    var extensionFile = fileSplit[fileSplit.length - 1];
-    var extensionAvailable = ['png', 'jpg', 'gif', 'jpeg'];
-
-    //validaciones
-
-    if (!file) {
-        return {
-            status: false,
-            mensaje: 'No files'
-        }
-    }
-
-    if (typesAvailable.indexOf(type) < 0) {
-        return {
-            ok: false,
-            mensaje: 'tipos de colección no válidos',
-            errors: { message: 'Tipo de colección no es válida' }
-        };
-    }
-
-    if (extensionAvailable.indexOf(extensionFile) < 0) {
-        return {
-            ok: false,
-            mensaje: 'Extension no valida'
-        }
-    }
-
+        var fileSplit = file.name.split('.');
+        var extensionFile = fileSplit[fileSplit.length - 1];
+        var fileName = `${uuidv4()}.${extensionFile}`;
+        let path = (`./uploads/${fileName}`);
+        let typesAvailable = ['color', 'product'];
+        var extensionFile = fileSplit[fileSplit.length - 1];
+        var extensionAvailable = ['png', 'jpg', 'gif', 'jpeg'];
     
-
-        file.mv(path, async (err:any) => {
-
-            if (err) {
-                console.log('if',err);
-                return {
-                    status: false,
-                    message: 'Subida fallida en el server local'
-                }
+        //validaciones
+    
+        if (!file) {
+            return {
+                status: false,
+                mensaje: 'No files'
             }
-        
-            const awsResult =  aws(fileName, type).then( (result:any) => {
-
-                // Subir desde aquí a mongo, tengo el enlace en el result y tengo el id en los params.
-                // return resolve({
-                //     tatus: true,
-                //     message: result.message
-                // })
-            })
-
+        }
     
-        })
-    // Fin de la promesa
+        if (typesAvailable.indexOf(type) < 0) {
+            return {
+                ok: false,
+                mensaje: 'tipos de colección no válidos',
+                errors: { message: 'Tipo de colección no es válida' }
+            };
+        }
+    
+        if (extensionAvailable.indexOf(extensionFile) < 0) {
+            return {
+                ok: false,
+                mensaje: 'Extension no valida'
+            }
+        }
+    
+    
+            file.mv(path, async (err:any) => {
+    
+                if (err) {
+                    console.log('if',err);
+                    return {
+                        status: false,
+                        message: 'Subida fallida en el server local'
+                    }
+                }
+            
+                //const awsResult = await aws(fileName, type)
+                const cloudiResult = await cloudi(fileName, type)
+                resolve({
+                   status:true,
+                   message: 'Subida correcta',
+                   //aws: awsResult,
+                  cloudinary: cloudiResult
+                })
+    
+            })
+            
     })
-        //cloudinaryUpload(fileName, type)
+
+
 
 }
 
 
-export const aws = (fileName:any, type:any) => {
+export const aws = async (fileName:any, type:any) => {
 
-    return new Promise( function(resolve, reject) {
 
         let key = `${type}/` + fileName
 
@@ -162,30 +159,17 @@ export const aws = (fileName:any, type:any) => {
             ACL    : 'public-read'
           };
     
-        const uploadAWS = upload(params,fileName).then( (result:any) => {
-            return resolve({
-                tatus: true,
-                message: result.message
-            })
-        })
-
-    })
-
-
-
+        return await uploadAWS(params,fileName)
 
 }
 
-export const upload = (params:any, fileName:any ) => {
+export const uploadAWS = (params:any, fileName:any ) => {
 
     return new Promise(function(resolve, reject) {
 
         var s3 = new AWS.S3();
 
-    
-        s3.upload(params, function (err:any, data:any) {
-
-
+        s3.upload(params, function(err:any, data:any) {
             //handle error
             if (err) {
                 console.log("Error", err);
@@ -194,23 +178,20 @@ export const upload = (params:any, fileName:any ) => {
                     massage: err
                 });
               }
-
-                          //success
+            //success
             if (data) {
+
                 fs.unlink(`C:/Users/usuario/Desktop/Programacion/e-commerce - ropa/BackEnd/backend-meang-publi-online-shop/uploads/${fileName}`, () => {});
                 return resolve({
                     status: true,
                     message: data.Location
                 })
               }
-
             })
-    
           })
 }
 
-export const cloudinaryUpload = async(fileName:any, type:any) => {
-
+export const cloudi = async (fileName:any, type:any) => {
 
     cloudinary.config({ 
         cloud_name: 'dvjue4lwj', 
@@ -218,26 +199,36 @@ export const cloudinaryUpload = async(fileName:any, type:any) => {
         api_secret: 'bX5Ebo0pG9fCQVxJZyTge5gMJFk' 
       });
 
-    cloudinary.v2.uploader.upload(`C:/Users/usuario/Desktop/Programacion/e-commerce - ropa/BackEnd/backend-meang-publi-online-shop/uploads/${fileName}`,
-          function(error:any, result:any) 
-          {
-              if(result) {
-                fs.unlink(`C:/Users/usuario/Desktop/Programacion/e-commerce - ropa/BackEnd/backend-meang-publi-online-shop/uploads/${fileName}`, () => {});
-                return {
-                    status: true,
-                    message: result
-                }
-              }
+      const cloudiResult = await cloudinaryUpload(fileName, type)
+      return cloudiResult
+}
 
-              return {
-                  status: false,
-                  message: error
+export const cloudinaryUpload = (fileName:any, type:any) => {
+
+    return new Promise(function(resolve, reject) {
+
+    
+    cloudinary.v2.uploader.upload(`C:/Users/usuario/Desktop/Programacion/e-commerce - ropa/BackEnd/backend-meang-publi-online-shop/uploads/${fileName}`,
+            {folder:'colors'},
+          function(error:any, data:any) {
+
+              if(data) {
+                fs.unlink(`C:/Users/usuario/Desktop/Programacion/e-commerce - ropa/BackEnd/backend-meang-publi-online-shop/uploads/${fileName}`, () => {});
+                return resolve ({
+                    status: true,
+                    message: data
+                })
+              } 
+
+              if(error) {
+                return reject({
+                    status: false,
+                    message: error
+              })
               }
           }
         );
-
-    
-    
+        })
 
     //const result = await cloudinary.v2.uploader.upload(path, {folder: process.env.PRINCIPAL_FOLDER_CLOUDINARY});
 }

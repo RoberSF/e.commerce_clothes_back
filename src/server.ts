@@ -92,10 +92,13 @@ async function init() {
         var type = request.params.type || 'color';
         var id = request.params.id || '1'
 
-        const mvSave = mv(file, type, id)
-        // .then( (result:any) => {
-        //     console.log(result);
-        // })
+        const mvSave = mv(file, type, id).then( (result:any) => {
+            console.log('put',result);
+            return {
+                status:true,
+                message: 'Subida correctamente realizada'
+            }
+        })
        
         
     })
