@@ -8,4 +8,5 @@ input ColorInput {
   active: Boolean
   "codigo referente al proveedor"
   code: String
+  img: String
 }

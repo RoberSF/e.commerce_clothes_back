@@ -5,4 +5,5 @@ type Color {
     slug: String
     active: Boolean
     code: String
+    img: String
 }
