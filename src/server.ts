@@ -86,18 +86,19 @@ async function init() {
 
     app.use(fileUpload({ useTempFiles: true }))
 
-    app.put('/upload', (request:any, response:any) => {
+    app.put('/upload/:type/:id', (request:any, response:any) => {
 
         var file = request.files.imagen;
-        var type = request.params.type || 'color';
-        var id = request.params.id || '1'
+        var type = request.params.type ;
+        var id = request.params.id ;
 
         const mvSave = mv(file, type, id).then( (result:any) => {
             console.log('put',result);
-            return {
+            return response.json(
+                {
                 status:true,
                 message: 'Subida correctamente realizada'
-            }
+            })
         })
        
         

@@ -160,6 +160,9 @@ export const updateOne = async(database: Db, collection: string, filter:object =
 //**************************************************************************************************
 
 export const updateFindOne = async(database: Db, collection: string, filter:object = {}, objectUpdated: object = {}) => {
+  console.log(collection);
+  console.log(filter);
+  console.log(objectUpdated);
   return await database.collection(collection).findOneAndUpdate(filter, objectUpdated);
 }
 

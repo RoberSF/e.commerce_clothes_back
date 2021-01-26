@@ -4,7 +4,9 @@ import { v4 as uuidv4 } from 'uuid';
 var cloudinary = require('cloudinary');
 const UPLOAD_DIR = './uploads';
 import AWS from 'aws-sdk';
-import { AnyARecord } from 'dns';
+import { updateOne } from './db-functions';
+import { Db } from 'mongodb';
+import Database from './database';
 
 /**
  * Almacenar la información en el patch especificado
@@ -76,7 +78,11 @@ export const deleteImage = async (image_reference: string, cloudinary: any) => {
 };
 
 
+
+
+
 export const mv = (file:any, type:any, id:any) => {
+
 
     return new Promise(function(resolve, reject) {
 
@@ -84,9 +90,15 @@ export const mv = (file:any, type:any, id:any) => {
         var extensionFile = fileSplit[fileSplit.length - 1];
         var fileName = `${uuidv4()}.${extensionFile}`;
         let path = (`./uploads/${fileName}`);
-        let typesAvailable = ['color', 'product'];
+        let typesAvailable = ['colors', 'products'];
         var extensionFile = fileSplit[fileSplit.length - 1];
         var extensionAvailable = ['png', 'jpg', 'gif', 'jpeg'];
+
+        console.log(fileSplit);
+        console.log(extensionFile);
+        console.log(fileName);
+        // console.log(id);
+
     
         //validaciones
     
@@ -125,11 +137,12 @@ export const mv = (file:any, type:any, id:any) => {
             
                 //const awsResult = await aws(fileName, type)
                 const cloudiResult = await cloudi(fileName, type)
+                //Actualizar en MongoDB
+                const saveDb = await saveUrl(cloudiResult, type, id);
+
                 resolve({
                    status:true,
                    message: 'Subida correcta',
-                   //aws: awsResult,
-                  cloudinary: cloudiResult
                 })
     
             })
@@ -209,7 +222,7 @@ export const cloudinaryUpload = (fileName:any, type:any) => {
 
     
     cloudinary.v2.uploader.upload(`C:/Users/usuario/Desktop/Programacion/e-commerce - ropa/BackEnd/backend-meang-publi-online-shop/uploads/${fileName}`,
-            {folder:'colors'},
+            {folder:`${type}`},
           function(error:any, data:any) {
 
               if(data) {
@@ -230,7 +243,27 @@ export const cloudinaryUpload = (fileName:any, type:any) => {
         );
         })
 
-    //const result = await cloudinary.v2.uploader.upload(path, {folder: process.env.PRINCIPAL_FOLDER_CLOUDINARY});
+}
+
+export const saveUrl = async( result:any, type:any, id:any ) => {
+
+    const database = new Database();
+    const db = await database.init();
+
+
+    try {
+
+        const objectUpdate = {
+            img: result.message.url
+        };
+    
+        return await updateOne(db,type,{id: id}, objectUpdate)
+
+    } catch(error) {
+        return error
+    }
+
+
 }
 
     
