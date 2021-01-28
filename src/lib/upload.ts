@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 var cloudinary = require('cloudinary');
 const UPLOAD_DIR = './uploads';
 import AWS from 'aws-sdk';
-import { updateOne } from './db-functions';
+import { updateOne, findOneElement, updateScreenshoots, deleteFirstElemArray } from './db-functions';
 import { Db } from 'mongodb';
 import Database from './database';
 
@@ -71,14 +71,13 @@ export const processUpload = async (upload: any, cloudinary: any) => {
 };
 
 
-export const deleteImage = async (image_reference: string, cloudinary: any) => {
+
+export const deleteImage = async (image_reference: string) => {
+
     const result = await cloudinary.v2.uploader.destroy(image_reference);
     console.log(result);
     return result.result;
 };
-
-
-
 
 
 export const mv = (file:any, type:any, id:any) => {
@@ -88,40 +87,34 @@ export const mv = (file:any, type:any, id:any) => {
 
         var fileSplit = file.name.split('.');
         var extensionFile = fileSplit[fileSplit.length - 1];
-        var fileName = `${uuidv4()}.${extensionFile}`;
+        var fileName = `${fileSplit[0]}_${uuidv4()}`;
         let path = (`./uploads/${fileName}`);
-        let typesAvailable = ['colors', 'products'];
+        let typesAvailable = ['colors', 'products', 'screenshoots'];
         var extensionFile = fileSplit[fileSplit.length - 1];
         var extensionAvailable = ['png', 'jpg', 'gif', 'jpeg'];
 
-        console.log(fileSplit);
-        console.log(extensionFile);
-        console.log(fileName);
-        // console.log(id);
-
-    
         //validaciones
     
         if (!file) {
-            return {
+            return reject({
                 status: false,
                 mensaje: 'No files'
-            }
+            })
         }
     
         if (typesAvailable.indexOf(type) < 0) {
-            return {
+            return reject({
                 ok: false,
                 mensaje: 'tipos de colección no válidos',
                 errors: { message: 'Tipo de colección no es válida' }
-            };
+            });
         }
     
         if (extensionAvailable.indexOf(extensionFile) < 0) {
-            return {
+            return reject({
                 ok: false,
                 mensaje: 'Extension no valida'
-            }
+            })
         }
     
     
@@ -139,6 +132,22 @@ export const mv = (file:any, type:any, id:any) => {
                 const cloudiResult = await cloudi(fileName, type)
                 //Actualizar en MongoDB
                 const saveDb = await saveUrl(cloudiResult, type, id);
+
+                if( cloudiResult != true) {
+                    reject ({
+                        status: false,
+                        message: 'No se ha guardado en la nube'
+                    })
+                } 
+                
+                if ( saveDb != true) {
+                    reject ({
+                        status: false,
+                        message: 'No se ha guardado en la nube y tampoco en la base de datos'
+                    })
+                }
+
+                
 
                 resolve({
                    status:true,
@@ -222,7 +231,7 @@ export const cloudinaryUpload = (fileName:any, type:any) => {
 
     
     cloudinary.v2.uploader.upload(`C:/Users/usuario/Desktop/Programacion/e-commerce - ropa/BackEnd/backend-meang-publi-online-shop/uploads/${fileName}`,
-            {folder:`${type}`},
+            {folder:`${type}`, public_id: fileName},
           function(error:any, data:any) {
 
               if(data) {
@@ -253,11 +262,36 @@ export const saveUrl = async( result:any, type:any, id:any ) => {
 
     try {
 
-        const objectUpdate = {
-            img: result.message.url
-        };
-    
-        return await updateOne(db,type,{id: id}, objectUpdate)
+        if(type === 'screenshoots') {
+
+            let screenshoots = result.message.url;
+            const checkUrl = await findOneElement(db, type, {id: id});
+
+            if(checkUrl.screenshoots.length >= 5) {
+                // coge la referencia 
+                let urlSplit = checkUrl.screenshoots[0].split('/');
+                let lastElement = urlSplit[urlSplit.length -1].split('.')[0];
+                let imageReference = `${type}/${lastElement}`;
+                // borra de clodinary
+                await deleteImage(imageReference);
+                // borra de mongoDB el último o primer elemento 
+                const deleteFirst =  await deleteFirstElemArray(db, type, {id: id});
+            }
+            await updateScreenshoots(db,{id: id, collection: type, screenshoots: screenshoots })
+            return true
+        }
+
+        var objectImg = { img: result.message.url};
+        const checkUrl = await findOneElement(db, type, {id:id});
+        if (checkUrl.img ) {
+            let urlSplit = checkUrl.img.split('/');
+            let lastElement = urlSplit[urlSplit.length -1].split('.')[0]
+            let imageReference = `${type}/${lastElement}`
+            await deleteImage(imageReference)
+            await updateOne(db,type,{id: id}, objectImg)
+
+            return true
+        }
 
     } catch(error) {
         return error
