@@ -8,7 +8,7 @@ type ProductItem {
     sizeInfo: [Size] 
     color: [String]
     colorInfo: [Color]
-    photo: String
+    img: String
     price: Float
     rating: Rating
     screenshoots: [String]

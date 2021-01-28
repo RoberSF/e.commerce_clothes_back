@@ -6,7 +6,7 @@ input ProductInput {
     description: String
     size: [String!]
     color: [String!]
-    photo: String
+    img: String
     price: Float
     screenshoots: [String!]
     active: Boolean,
