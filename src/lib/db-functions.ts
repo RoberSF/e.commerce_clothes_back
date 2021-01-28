@@ -397,5 +397,31 @@ export const findElementsSubRandom = async(database: Db, collection: string, arg
  
      return await database.collection(collection).aggregate(pipeline).sort({id: -1}).toArray()
 
-    }
+  }
 
+  //**************************************************************************************************
+  //                 Método para añadir a un objeto tipo Array                                                    
+  //**************************************************************************************************
+
+  export const updateScreenshoots = async(database: Db, args:any) => {
+
+    let object = { $push: { screenshoots: args.screenshoots } }
+
+    const tryit = await database.collection(args.collection).updateOne({id: args.id}, object)
+
+    return tryit
+
+  }
+
+
+  //**************************************************************************************************
+  //                 Método para eliminar primer objeto de un array                                                    
+  //**************************************************************************************************
+  export const deleteFirstElemArray =  async (database: Db, collection: string, args:any) => {
+
+    let object = { $pop: { screenshoots: -1 } }
+
+    const tryit = await database.collection(collection).updateOne({id: args.id}, object)
+
+    return tryit
+  }
