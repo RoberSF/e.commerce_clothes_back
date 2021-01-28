@@ -10,8 +10,8 @@ import expressPlayground from 'graphql-playground-middleware-express';
 import Database from './lib/database';
 import chalk from 'chalk';
 import fileUpload from 'express-fileupload'
-import { v4 as uuidv4 } from 'uuid';
-import { cloudinaryUpload, aws, mv } from './lib/upload';
+import { mv } from './lib/upload';
+import {verificaToken} from './middlewares/autentication'
 
 
 /* ***************************************************************************************/
@@ -86,19 +86,15 @@ async function init() {
 
     app.use(fileUpload({ useTempFiles: true }))
 
-    app.put('/upload/:type/:id', (request:any, response:any) => {
+    app.put('/upload/:type/:id',[verificaToken], (request:any, response:any) => {
 
         var file = request.files.imagen;
         var type = request.params.type ;
         var id = request.params.id ;
 
         const mvSave = mv(file, type, id).then( (result:any) => {
-            console.log('put',result);
-            return response.json(
-                {
-                status:true,
-                message: 'Subida correctamente realizada'
-            })
+            console.log(result);
+            return response.json(result)
         })
        
         
