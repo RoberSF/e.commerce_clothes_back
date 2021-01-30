@@ -86,6 +86,8 @@ async function init() {
 
     app.use(fileUpload({ useTempFiles: true }))
 
+    //app.use('/upload', require('./routes/upload'))
+
     app.put('/upload/:type/:id',[verificaToken], (request:any, response:any) => {
 
         var file = request.files.imagen;
@@ -93,16 +95,22 @@ async function init() {
         var id = request.params.id ;
 
         const mvSave = mv(file, type, id).then( (result:any) => {
-            console.log(result);
-            return response.json(result)
+            if( !result.status) {
+                return response.status(500).json({
+                    status: true,
+                    message: result
+                })
+            }
+
+            return response.status(200).json({
+                status: true,
+                message: result
+            })
+
         })
        
         
     })
-
-
-
-
 
     const httpServer = createServer(app);
     server.installSubscriptionHandlers(httpServer) // Para escuchuchar las publicaciones a tiempo real. Tiene que ir aquí si o si.

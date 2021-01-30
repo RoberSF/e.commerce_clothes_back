@@ -46,7 +46,6 @@ export const processUpload = async (upload: any, cloudinary: any) => {
         const fileName = `${uuidv4()}`
         let path = (`../../uploads/${fileName}`);
         
-        console.log(path);
         const stream = fs.createReadStream(path);
         // Enviar para almacenar
         //const { id, path }: any = await storeFyleSystem({ stream, filename }, 'anartz.mugika');
@@ -75,15 +74,13 @@ export const processUpload = async (upload: any, cloudinary: any) => {
 export const deleteImage = async (image_reference: string) => {
 
     const result = await cloudinary.v2.uploader.destroy(image_reference);
-    console.log(result);
     return result.result;
 };
 
 
 export const mv = (file:any, type:any, id:any) => {
 
-
-    return new Promise(function(resolve, reject) {
+    return new Promise(async function(resolve, reject) {
 
         var fileSplit = file.name.split('.');
         var extensionFile = fileSplit[fileSplit.length - 1];
@@ -118,45 +115,32 @@ export const mv = (file:any, type:any, id:any) => {
         }
     
     
-            file.mv(path, async (err:any) => {
-    
-                if (err) {
-                    console.log('if',err);
-                    return {
-                        status: false,
-                        message: 'Subida fallida en el server local'
-                    }
-                }
+        await file.mv(path)
             
-                //const awsResult = await aws(fileName, type)
-                const cloudiResult = await cloudi(fileName, type)
-                //Actualizar en MongoDB
-                const saveDb = await saveUrl(cloudiResult, type, id);
+        //const awsResult = await aws(fileName, type)
 
-                if( cloudiResult != true) {
-                    reject ({
-                        status: false,
-                        message: 'No se ha guardado en la nube'
-                    })
-                } 
-                
-                if ( saveDb != true) {
-                    reject ({
-                        status: false,
-                        message: 'No se ha guardado en la nube y tampoco en la base de datos'
-                    })
-                }
+            const cloudiResult:any = await cloudi(fileName, type)
+             if(!cloudiResult.status) {
+                 resolve ({
+                     status: false,
+                     message: 'Subida a cloudinary fallida'
+                 })
+                 return
+            }
 
-                
-
+            const saveDb = await saveUrl(cloudiResult, type, id)
+             if(saveDb.result.nModified != 1) {
                 resolve({
-                   status:true,
-                   message: 'Subida correcta',
-                })
-    
-            })
-            
-    })
+                    status: false,
+                    message: 'Subida a DB fallida'
+                 })
+                return
+            }
+            resolve({
+                status: true,
+                message: 'Subida correcta'
+             })
+        })
 
 
 
@@ -194,7 +178,6 @@ export const uploadAWS = (params:any, fileName:any ) => {
         s3.upload(params, function(err:any, data:any) {
             //handle error
             if (err) {
-                console.log("Error", err);
                 return reject({
                     status: false,
                     massage: err
@@ -256,8 +239,7 @@ export const cloudinaryUpload = (fileName:any, type:any) => {
 
 export const saveUrl = async( result:any, type:any, id:any ) => {
 
-    const database = new Database();
-    const db = await database.init();
+    const db = await new Database().init();
 
 
     try {
@@ -265,7 +247,7 @@ export const saveUrl = async( result:any, type:any, id:any ) => {
         if(type === 'screenshoots') {
 
             let screenshoots = result.message.url;
-            const checkUrl = await findOneElement(db, type, {id: id});
+            const checkUrl = await findOneElement(db, 'products', {id: id});
 
             if(checkUrl.screenshoots.length >= 5) {
                 // coge la referencia 
@@ -277,20 +259,23 @@ export const saveUrl = async( result:any, type:any, id:any ) => {
                 // borra de mongoDB el último o primer elemento 
                 const deleteFirst =  await deleteFirstElemArray(db, type, {id: id});
             }
-            await updateScreenshoots(db,{id: id, collection: type, screenshoots: screenshoots })
-            return true
+            const updateScreen = await updateScreenshoots(db,{id: id, collection: 'products', screenshoots: screenshoots })
+            return updateScreen
         }
 
         var objectImg = { img: result.message.url};
         const checkUrl = await findOneElement(db, type, {id:id});
-        if (checkUrl.img ) {
+        
+        if (checkUrl.img === null || checkUrl.img === '' ) {
+            const updateUrlDb = await updateOne(db,type,{id: id}, objectImg)
+            return updateUrlDb
+        } else {
             let urlSplit = checkUrl.img.split('/');
             let lastElement = urlSplit[urlSplit.length -1].split('.')[0]
-            let imageReference = `${type}/${lastElement}`
+            let imageReference = `${type}/${lastElement}`;
             await deleteImage(imageReference)
-            await updateOne(db,type,{id: id}, objectImg)
-
-            return true
+            const updateUrlDb = await updateOne(db,type,{id: id}, objectImg)
+            return updateUrlDb
         }
 
     } catch(error) {
@@ -299,5 +284,6 @@ export const saveUrl = async( result:any, type:any, id:any ) => {
 
 
 }
+
 
     
