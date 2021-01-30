@@ -1,7 +1,7 @@
 import { IResolvers } from 'graphql-tools';
 import { pagination } from '../../lib/pagination';
 import { COLLECTIONS } from '../../config/constants';
-import { findElements, findOneElement, findElementsSub, findElementsSearch } from '../../lib/db-functions';
+import { findElements, findOneElement, findElementsSub, findElementsSearch, findElementsOfferPrice } from '../../lib/db-functions';
 
 const resolversProductsQuery: IResolvers = {
 
@@ -108,7 +108,31 @@ const resolversProductsQuery: IResolvers = {
             status: false,
             message: `Lista de productos no cargada: ${error}`
         }}
-       },
+    },
+
+    async productsOffersLast(_, { page, itemsPerPage, active, random, topPrice}, { db }) {
+
+            try {
+                const paginationData = await pagination(db, COLLECTIONS.PRODUCTS_ITEMS, page, itemsPerPage);
+                return {
+                    info: {
+                        page: paginationData.page, 
+                        pages:paginationData.pages, 
+                        total: paginationData.total,
+                        itemsPerPage: paginationData.itemsPage
+                            },
+                    status: true,
+                    message: 'Lista de productos cargados correctamente cargada',
+                    products: await findElementsOfferPrice(db, COLLECTIONS.PRODUCTS_ITEMS, [{active: active}, {random: random}, {topPrice: topPrice}, { itemsPerPage: itemsPerPage}], paginationData)
+                }
+            } catch (error) {
+                return {
+                info: null,
+                status: false,
+                message: `Lista de plataformas no cargada: ${error}`
+            }}        
+        
+           },
   }
 }
 

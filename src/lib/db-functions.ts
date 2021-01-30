@@ -273,9 +273,8 @@ export const findElementsSubRandom = async(database: Db, collection: string, arg
 //  De X precio para abajo, de Stock para abajo y ordenados de menos a más por precio                                                           
 //**************************************************************************************************
 
-  export const findElementsOfferStock = async(database: Db, collection: string, args:any,paginationOptions: IPaginationOptions = {page: 1, pages: 1, itemsPage: -1, skip: 0, total: -1}) => {
+  export const findElementsOfferPrice = async(database: Db, collection: string, args:any,paginationOptions: IPaginationOptions = {page: 1, pages: 1, itemsPage: -1, skip: 0, total: -1}) => {
 
-    // console.log('args', args[0], args[1], args[2], args[3],  args[4]);
     let filter = {}
     let filteredActive: object = {$ne: false};
     let sortBy = 1;
@@ -287,60 +286,42 @@ export const findElementsSubRandom = async(database: Db, collection: string, arg
         return await database.collection(collection).find(filter).toArray();
       }
       
-      
       if(args[0].active === ACTIVE_VALUES_FILTER.ALL){
-        // filter.push(filter[0].active = {})
         filteredActive = {$ne: false}
       } else if(args[0].active === ACTIVE_VALUES_FILTER.INACTIVE ) {
-        // filter.push({active: {$eq: false}}) 
         filteredActive = {$eq: false}
       }
 
-      if(args[3].lastUnits > 0 && args[2].topPrice > 10 ) {
-        otherFilters = {
-            $and: [
-                {active: filteredActive},
-                {price: {$lte: args[2].topPrice}},
-                {stock: {$lte: args[3].lastUnits}}
-            ]
-        }
-    } else if( args[3].lastUnits <= 0 && args[2].topPrice > 10 ) {
+      if(args[2].topPrice > 5 ) {
 
-        otherFilters = {price: {$lte: args[2].topPrice}}
-
-        } else if( args[3].lastUnits > 0 && args[2].topPrice <= 10 ) {
-
-            otherFilters = {stock: {$lte: args[3].lastUnits}}
-    
-            }
-
-      let pipeline = [ 
-        {$match: otherFilters}, // le mandaría todas las querys/filtros juntas
-        {$sample: {size: paginationOptions.itemsPage}} //l eidgo el número de items random que quiero
-      ];
-
-      // console.log(pipeline);
-      // console.log(otherFilters);
+        otherFilters = { $and: [ {active: filteredActive}, {price: {$lte: args[2].topPrice } } ]  } 
+      }
+      
+      // let pipeline = [ {$match: { $and: [ {active: filteredActive }, {price: {$lte: args[2].topPrice} } ] } }, {$sample: {size: paginationOptions.itemsPage} } ];
+      let pipeline = [ {$match: otherFilters }, {$sample: {size: paginationOptions.itemsPage} } ];
+      
 
       if ( args[1].random == undefined || args[1].random == null || !args[1].random ) {
 
       pipeline = [ 
           {$match: otherFilters} // le mandaría todas las querys/filtros juntas
         ];
-      // console.log('Random false');
+
       return await database.collection(collection).aggregate(pipeline)
         .skip(paginationOptions.skip)
         .limit(paginationOptions.itemsPage)
         .sort({price: sortBy})
         .toArray()
       } else {
-      // console.log('random true');
+
       return await database.collection(collection).aggregate(pipeline)
         .skip(paginationOptions.skip)
         .limit(paginationOptions.itemsPage)
         .sort({price: sortBy})
         .toArray()
       }
+
+      
     }
 
   //**************************************************************************************************
