@@ -10,15 +10,16 @@ if (process.env.NODE_ENV !== 'production') {
 export const SECRET_KEY =
   process.env.SECRET || 'MEANgraphqlRober';
 
+
 export enum COLLECTIONS {
-  USERS = 'users',
-  TAGS = 'tags',
-  PRODUCTS_ITEMS = 'products',
-  POSTS = 'posts',
-  PRODUCTS_SIZES = 'product_tallas',
-  PRODUCTS_COLORS = 'product_color',
-  SIZES= 'tallas',
-  COLORS = 'colors'
+    USERS = 'users',
+    TAGS = 'tags',
+    PRODUCTS_ITEMS = 'products',
+    POSTS = 'posts',
+    PRODUCTS_SIZES = 'product_tallas',
+    PRODUCTS_COLORS = 'product_color',
+    SIZES = 'tallas',
+    COLORS = 'colors',
 }
 
 
