@@ -1,0 +1,22 @@
+
+type Query {
+  "Lista de etiquetas (tags)"
+  categorias(
+    "Página seleccionada para acceder a ella"
+    page: Int = 1
+    "Tags (etiquetas) que se obtendrán por página"
+    itemsPerPage: Int = 20
+    "Especificar el estado del tag que queremos mostrar"
+    active: ActiveFilterEnum = ACTIVE
+  ): ResultCategoria
+
+  "Item del género seleccionado"
+  categoria("Identificador de la etiqueta seleccionada" id: ID!): ResultCategoria
+
+  categoriaSearch(
+    page: Int = 1
+    itemsPerPage: Int = 20
+    active: ActiveFilterEnum = ACTIVE 
+    value: String): ResultCategoria
+
+}

@@ -1,0 +1,13 @@
+
+
+type ResultCategoria implements Result {
+    info: ResultInfo
+    "Estado de la operación"
+    status: Boolean!
+    "Mensaje de la operación para dar feedback"
+    message: String!
+    "Información del tag (etiqueta) seleccionado"
+    categoria: Categoria
+    "Lista de tags (etiquetas) seleccionadas"
+    categorias: [Categoria!]
+}
