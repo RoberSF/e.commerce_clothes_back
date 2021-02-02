@@ -3,6 +3,7 @@ type ProductItem {
     name: String
     slug: String
     categoria: String
+    categoriaInfo: [Categoria]
     description: String
     size: [String]
     sizeInfo: [Size] 

@@ -45,6 +45,14 @@ const resolversProductsType: IResolvers = {
             return error
         }
     },
+    categoriaInfo: async(parent,__,{db}) => {
+        try {
+            const result = await findElementsNormal(db,COLLECTIONS.CATEGORIAS, {id: parent.categoria})
+            return result
+        } catch(error) {
+            return error
+        }
+    },
    }
  };
 
