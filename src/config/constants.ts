@@ -20,6 +20,7 @@ export enum COLLECTIONS {
     PRODUCTS_COLORS = 'product_color',
     SIZES = 'tallas',
     COLORS = 'colors',
+    CATEGORIAS = 'categorias'
 }
 
 
