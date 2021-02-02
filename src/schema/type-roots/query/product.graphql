@@ -15,9 +15,10 @@ type Query {
         page: Int = 1
         itemsPerPage: Int = 20
         active: ActiveFilterEnum = ACTIVE 
-        value: String): ResultProductItem
+        value: String
+        categoriasId: [ID] ): ResultProductItem
 
-        productsOffersLast (
+    productsOffersLast (
         "Página seleccionada para acceder a ella"
         page: Int = 1,
         "Products de la tienda (juegos) que se obtendrán por página"
@@ -28,5 +29,15 @@ type Query {
         topPrice: Float = -1,
         "Seleccionar los elementos de manera aleatoria"
         random: Boolean = false): ResultProductItem
+
+    productsCategorias(
+        "Página seleccionada para acceder a ella"
+        page: Int = 1,
+        "Products de la tienda (juegos) que se obtendrán por página"
+        itemsPerPage: Int = 20,
+        "Especificar el estado del product que queremos mostrar"
+        active: ActiveFilterEnum = ACTIVE,
+        "Especificar las platformas seleccionadas"
+        categorias: [ID]): ResultProductItem
 
 }
