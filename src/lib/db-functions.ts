@@ -101,19 +101,18 @@ export const findElements = async(database: Db, collection: string, args:any = {
 }
 
 
-//**************************************************************************************************
+//**********************************************************************************************************************************************************
 //                   Lista de elementos de una colección con paginación y filtro por plataforma
-
+//       Esta función se rehutiliza para hacer búsqueda sólo con filtro active o si le mandamos un array de id(colors, sizes, categorias) 
 // (En caso de que lista de usuarios, géneros etc no funcione, cambiar a findElements que sólo tiene filtro "active" )                                                  
-//**************************************************************************************************
+//**********************************************************************************************************************************************************
 
 export const findElementsSub = async(database: Db, collection: string, args:any,paginationOptions: IPaginationOptions = {page: 1, pages: 1, itemsPage: -1, skip: 0, total: -1}) => {
 
-
 let filter = {};
 let filteredActive: object = {active: {$ne: false}};
-let sizeId: Array<any> = [];
-const asignPlatform_Id = args.sizeId ? sizeId = args.sizeId : sizeId = [];
+let itemId: Array<any> = [];
+const asignId = args.itemId ? itemId = args.itemId : itemId = [];
 let filterTogether = filteredActive
 
 
@@ -128,11 +127,29 @@ let filterTogether = filteredActive
     filteredActive = {active: {$eq: false}}
   }
   
-  if (sizeId && sizeId !== undefined){
-    filterTogether = {...filteredActive, ...{sizeId: {$in: sizeId}}   } // { active: { '$ne': false }, platform_id: { '$in': [ '4', '18' ] } }
+
+  switch (args.filter) {
+
+    case 'sizeId':
+      if (itemId && itemId !== undefined){
+        filterTogether = {...filteredActive, ...{sizeId: {$in: itemId}}   } // { active: { '$ne': false }, platform_id: { '$in': [ '4', '18' ] } }
+      }
+      break;
+    case 'colorId':
+      if (itemId && itemId !== undefined){
+        filterTogether = {...filteredActive, ...{colorId: {$in: itemId}}   } // { active: { '$ne': false }, platform_id: { '$in': [ '4', '18' ] } }
+      }
+      break;
+    case 'categoriaId':
+      if (itemId && itemId !== undefined){
+        filterTogether = {...filteredActive, ...{categoria: {$in: itemId}  } }// { active: { '$ne': false }, platform_id: { '$in': [ '4', '18' ] } }
+      }
+      break;
+    default:
+      break;
   }
 
-  if (sizeId.length <= 0 || sizeId == undefined){
+  if (itemId.length <= 0 || itemId == undefined){
     filterTogether = {...filteredActive}
   }
 
@@ -160,9 +177,6 @@ export const updateOne = async(database: Db, collection: string, filter:object =
 //**************************************************************************************************
 
 export const updateFindOne = async(database: Db, collection: string, filter:object = {}, objectUpdated: object = {}) => {
-  console.log(collection);
-  console.log(filter);
-  console.log(objectUpdated);
   return await database.collection(collection).findOneAndUpdate(filter, objectUpdated);
 }
 
