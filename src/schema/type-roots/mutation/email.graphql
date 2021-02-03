@@ -39,4 +39,6 @@ type Mutation {
   por el olvido de ella o simplemente por querer hacer un cambio a una más segura
   """
   changePassword(id: ID!, password: String!): ResultUser
+
+  contactEmail(name: String!, email: String!, title: String!, text: String!): ResultMail
 }

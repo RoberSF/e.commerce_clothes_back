@@ -205,9 +205,21 @@ const resolversMailMutation: IResolvers = {
     
   },
 
+  async contactEmail(_,{name, email, title, text}) {
 
+    const html = `<h2>Hola ${name}</h2>.<br> 
+                    <h4>Aquí tiene el recibo de su consulta:</h4> <br> 
+                          <p><h5> ${title}</h5></p> 
+                                <p> ${text}</p>`
+    const mail = {
+      subject: 'Recibo de consulta de Basic Moda',
+      to: [email, 'onlineshoprsf@gmail.com'],
+      html
+    }
 
-
+    return new MailService().send(mail)
+ 
+    },
 
     //Fin de Mutation
     }
