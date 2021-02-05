@@ -17,7 +17,7 @@ const resolversPostMutation: IResolvers = {
 
       // Asignar la fecha en formato ISO en la propiedad registerDate
       post.date = new Date().toISOString();
-      post.active = true;
+      post.active = false;
       post.slug = slugify(post.title || '', { lower: true })
 
 
@@ -183,7 +183,7 @@ async unBlockPost(_, { id }, { db }) {
   };
 
   try {
-      return await updateOne(db,COLLECTIONS.USERS,filterPostObjectId, objectUpdate)
+      return await updateOne(db,COLLECTIONS.POSTS,filterPostObjectId, objectUpdate)
       .then(
           result => {
               // También hay result.n que nos dice el número de elementos que nos devolvió

@@ -1,7 +1,7 @@
 type Mail {
     from: String
     "Receptor"
-    to: String!
+    to: [String!]
     "Asunto"
     subject: String!
     "Contenido del email con HTML"

@@ -4,7 +4,7 @@ import { findElements, findElementsSearch, findElementsSub, findOneElement } fro
 import { pagination } from '../../lib/pagination';
 
 
-const resolversPostQuery: IResolvers = {
+const resolversSalesQuery: IResolvers = {
 
 Query:{
 
@@ -12,10 +12,10 @@ Query:{
 //   Método para listar elemtos solamente                                                           
 //**************************************************************************************************
 
-   async posts(_, {page, itemsPerPage, active}, { db }) {
+   async sales(_, {page, itemsPerPage, active}, { db }) {
 
         try {
-            const paginationData = await pagination(db, COLLECTIONS.POSTS, page, itemsPerPage);
+            const paginationData = await pagination(db, COLLECTIONS.SALES, page, itemsPerPage);
             return {
                 info: {
                     page: paginationData.page, 
@@ -24,14 +24,14 @@ Query:{
                     itemsPerPage: paginationData.itemsPage
                         },
                 status: true,
-                message: 'Lista de posts correctamente cargada',
-                posts: await findElementsSub(db, COLLECTIONS.POSTS, {active: active}, paginationData)
+                message: 'Lista de ventas correctamente cargada',
+                sales: await findElementsSub(db, COLLECTIONS.SALES, {active: active}, paginationData)
             }
         } catch (error) {
             return {
             info: null,
             status: false,
-            message: `Lista de posts no cargada: ${error}`
+            message: `Lista de ventas no cargada: ${error}`
         }}
     },
 
@@ -40,21 +40,21 @@ Query:{
 //**************************************************************************************************
     
 
-    async post(_, {id}, {db}) {
+    async sale(_, {id}, {db}) {
         try {
             return {
                 status: true,
                 message: `Post con ${id} cargado correctamente`,
-                post: await findOneElement(db, COLLECTIONS.POSTS, {id: id}),
+                sale: await findOneElement(db, COLLECTIONS.SALES, {id: id}),
             }
         } catch (error) {
             return {
             status: false,
-            message: `Post no cargado: ${error}`
+            message: `Venta no cargada: ${error}`
         }}
     },
 
-    async postSearch(_, { page, itemsPerPage, active, value}, { db }) {
+    async saleSearch(_, { page, itemsPerPage, active, value}, { db }) {
 
 
         // ** platform ahora tendría que se run array de strings
@@ -62,18 +62,18 @@ Query:{
         try {
             return {
                 status: true,
-                message: 'Lista de colores correctamente cargada',
-                posts: await findElementsSearch(db, COLLECTIONS.POSTS, {active: active, name: value})
+                message: 'Lista de ventas correctamente cargada',
+                sales: await findElementsSearch(db, COLLECTIONS.SALES, {active: active, name: value})
             }
         } catch (error) {
             return {
             info: null,
             status: false,
-            message: `Lista de posts no cargada: ${error}`
+            message: `Lista de ventas no cargada: ${error}`
         }}
        },
 
 }
 }
 
-export default resolversPostQuery
+export default resolversSalesQuery

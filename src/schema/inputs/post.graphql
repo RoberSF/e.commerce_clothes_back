@@ -4,6 +4,7 @@ input PostInput {
     intro: String
     contenido: String
     categoria: String
+    author: String
     img: String
     date: String
     active: Boolean

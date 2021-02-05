@@ -11,7 +11,7 @@ class MailService {
                from: '"Online Shop 👻" <onlineshoprsf@gmail.com>', // sender address
                to: mail.to, // list of receivers
                subject: mail.subject, // Subject line
-               text: "Hello world?", // plain text body
+              text: "Hola!! ", // plain text body
                html: mail.html, // html body
              }, (error, _) => {
 

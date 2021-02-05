@@ -1,0 +1,12 @@
+input SaleInput {
+    operationId: String
+    emailAdress: String
+    clientName: String
+    clientPlatformId: String
+    url: String
+    date: String
+    status: String
+    platform: String
+    totalOperation: String
+    active: Boolean
+}

@@ -1,0 +1,41 @@
+
+type Mutation {
+    """
+  Acción donde vamos a añadir el tag introducido, seguirá la estructura
+  de los géneros
+  """
+  addSale(
+    """
+    Nombre del tag que vamos a añadir. Con este valor crearemos
+    el slug siguiendo este formato.
+    Por ejemplo: "tag = Action Shooter" => slug = action-shooter
+    """
+    sale: SaleInput!): ResultSale
+  """
+  Para actualizar la información del tag especificado con el ID
+  y así tener ña información actualizada a nuestro gusto con el
+  nuevo tag
+  """
+  updateSale(
+    "ID único del tag que queremos actualizar"
+    id: ID!
+    "Nombre del tag con el que vamos a actualizar"
+    sale: SaleInput!): ResultSale
+
+  """
+  Para bloquear (desactivar) el tag y clasificarlo como "inactivo" y
+  no poder utilizarlo
+  """
+  blockSale(
+    "ID único del tag que queremos bloquear"
+    id: ID!): ResultSale
+
+  """
+  Para desbloquear (activar) el género y clasificarlo como "activo" y
+  poder utilizarlo
+  """
+  unBlockSale(
+    "ID único del tag que queremos bloquear"
+    id: ID!): ResultSale
+    
+}

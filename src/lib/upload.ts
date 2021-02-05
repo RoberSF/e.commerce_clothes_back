@@ -266,7 +266,7 @@ export const saveUrl = async( result:any, type:any, id:any ) => {
         var objectImg = { img: result.message.url};
         const checkUrl = await findOneElement(db, type, {id:id});
         
-        if (checkUrl.img === null || checkUrl.img === '' ) {
+        if (checkUrl.img === null || checkUrl.img === '' || !checkUrl.img ) {
             const updateUrlDb = await updateOne(db,type,{id: id}, objectImg)
             return updateUrlDb
         } else {

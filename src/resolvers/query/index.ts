@@ -8,6 +8,7 @@ import resolversPostQuery from './post';
 import resolversSizeQuery from './size';
 import resolversColorQuery from './color';
 import resolversCategoriaQuery from './categoria';
+import resolversSalesQuery from './sales';
 
 const queryResolvers = GMR.merge([
     resolversUsersQuery,
@@ -18,7 +19,8 @@ const queryResolvers = GMR.merge([
     resolversPostQuery,
     resolversSizeQuery,
     resolversColorQuery,
-    resolversCategoriaQuery
+    resolversCategoriaQuery,
+    resolversSalesQuery
 ]);
 
 export default queryResolvers

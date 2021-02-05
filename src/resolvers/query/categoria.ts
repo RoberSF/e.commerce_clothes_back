@@ -15,6 +15,7 @@ const resolversCategoriaQuery: IResolvers = {
 
     try {
         const paginationData = await pagination(db, COLLECTIONS.CATEGORIAS, page, itemsPerPage);
+        // console.log(paginationData);
         return {
             info: {
                 page: paginationData.page, 

@@ -1,7 +1,7 @@
 import { IResolvers } from 'graphql-tools';
-import { pagination } from '../../lib/pagination';
+import { pagination} from '../../lib/pagination';
 import { COLLECTIONS } from '../../config/constants';
-import { findElements, findOneElement, findElementsSub, findElementsSearch, findElementsOfferPrice } from '../../lib/db-functions';
+import { findElements, findOneElement, findElementsSub, findElementsSearch, findElementsOfferPrice, countlements, countElements } from '../../lib/db-functions';
 
 const resolversProductsQuery: IResolvers = {
 
@@ -136,9 +136,10 @@ const resolversProductsQuery: IResolvers = {
     async productsCategorias(_, { page, itemsPerPage, active, categorias}, { db }) {
 
         // ** categorias ahora tendría que se run array de strings
-
+        let since = 1;
         try {
-            const paginationData = await pagination(db, COLLECTIONS.PRODUCTS_SIZES, page, itemsPerPage);
+            const paginationData = await pagination(db, COLLECTIONS.POSTS, page, itemsPerPage);
+
             return {
                 info: {
                     page: paginationData.page, 

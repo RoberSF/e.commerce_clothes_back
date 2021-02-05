@@ -11,11 +11,11 @@ import { ACTIVE_VALUES_FILTER, COLLECTIONS } from '../config/constants';
  */   
       
       
-    //**************************************************************************************************
-    //                 Comprobar el último usuario registrado para asignar ID                                                           
-    //**************************************************************************************************
-    
-    export  const asingDocumentId = async (database: Db, collection: string, sort: object = {registerDate: -1} ) => {
+//**************************************************************************************************
+//                 Comprobar el último usuario registrado para asignar ID                                                           
+//**************************************************************************************************
+
+export  const asingDocumentId = async (database: Db, collection: string, sort: object = {registerDate: -1} ) => {
             const lastElement = await database
             .collection(collection)
             .find()
@@ -29,24 +29,7 @@ import { ACTIVE_VALUES_FILTER, COLLECTIONS } from '../config/constants';
             // El "+" hace que la operación sea en "número" y despues con String() lo pasamos a texto
             return String(+lastElement[0].id + 1);
           } 
-        } 
-
-
-//**************************************************************************************************
-//  Esto sería como lo tendría en el user.ts del mutation                                                           
-//**************************************************************************************************
-
-//     const lastUser = await db
-//     .collection(COLLECTIONS.USERS)
-//     .find()
-//     .limit(1)
-//     .sort({ registerDate: -1 }) // Ordenamos de manera descente
-//     .toArray(); // Para obtener una lista
-//   if (lastUser.length === 0) {
-//     user.id = 1;
-//   } else {
-//     user.id = lastUser[0].id + 1;
-//   }
+} 
 
 
 //**************************************************************************************************
@@ -142,7 +125,7 @@ let filterTogether = filteredActive
       break;
     case 'categoriaId':
       if (itemId && itemId !== undefined){
-        filterTogether = {...filteredActive, ...{categoria: {$in: itemId}  } }// { active: { '$ne': false }, platform_id: { '$in': [ '4', '18' ] } }
+        filterTogether = {...filteredActive, ...{categoria: {$in: itemId}} }// { active: { '$ne': false }, platform_id: { '$in': [ '4', '18' ] } }
       }
       break;
     default:
@@ -312,14 +295,15 @@ export const findElementsSubRandom = async(database: Db, collection: string, arg
       }
       
       // let pipeline = [ {$match: { $and: [ {active: filteredActive }, {price: {$lte: args[2].topPrice} } ] } }, {$sample: {size: paginationOptions.itemsPage} } ];
-      let pipeline = [ {$match: otherFilters }, {$sample: {size: paginationOptions.itemsPage} } ];
+      let pipeline = [ {$match: otherFilters }, {$sample: {size: paginationOptions.itemsPage} }];
       
 
       if ( args[1].random == undefined || args[1].random == null || !args[1].random ) {
 
       pipeline = [ 
-          {$match: otherFilters} // le mandaría todas las querys/filtros juntas
+          {$match: otherFilters}// le mandaría todas las querys/filtros juntas
         ];
+
 
       return await database.collection(collection).aggregate(pipeline)
         .skip(paginationOptions.skip)
@@ -343,7 +327,8 @@ export const findElementsSubRandom = async(database: Db, collection: string, arg
   //**************************************************************************************************
   
   export const findElementsNormal = async(database: Db, collection: string, filter:object = {}) => {
-      return await database.collection(collection).find(filter).toArray();}
+      return await database.collection(collection).find(filter).toArray();
+    }
 
 
 //**************************************************************************************************
@@ -420,3 +405,47 @@ export const findElementsSubRandom = async(database: Db, collection: string, arg
 
     return tryit
   }
+
+
+  export const countElements = async(database: Db, collection: string, args:any) => {
+
+    let filteredActive: object = {active: {$ne: false}};
+    let itemId: Array<any> = [];
+    const asignId = args.itemId ? itemId = args.itemId : itemId = [];
+    let filterTogether = filteredActive
+    
+  
+      if(args.active === ACTIVE_VALUES_FILTER.ALL){
+        filteredActive = {}
+      } else if(args.active === ACTIVE_VALUES_FILTER.INACTIVE ) {
+        filteredActive = {active: {$eq: false}}
+      }
+      
+    
+      switch (args.filter) {
+    
+        case 'sizeId':
+          if (itemId && itemId !== undefined){
+            filterTogether = {...filteredActive, ...{sizeId: {$in: itemId}}   } // { active: { '$ne': false }, platform_id: { '$in': [ '4', '18' ] } }
+          }
+          break;
+        case 'colorId':
+          if (itemId && itemId !== undefined){
+            filterTogether = {...filteredActive, ...{colorId: {$in: itemId}}   } // { active: { '$ne': false }, platform_id: { '$in': [ '4', '18' ] } }
+          }
+          break;
+        case 'categoriaId':
+          if (itemId && itemId !== undefined){
+            filterTogether = {...filteredActive, ...{categoria: {$in: itemId}} }// { active: { '$ne': false }, platform_id: { '$in': [ '4', '18' ] } }
+          }
+          break;
+        default:
+          break;
+      }
+    
+      if (itemId.length <= 0 || itemId == undefined){
+        filterTogether = {...filteredActive}
+      }
+    
+      return await database.collection(collection).count(filterTogether)
+    }
