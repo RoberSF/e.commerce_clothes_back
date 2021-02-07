@@ -11,7 +11,6 @@ const resolversSaleMutation: IResolvers = {
     async addSale(_, { sale }, { db }) {
 
 
-    console.log(sale);
       // Comprobar el último usuario registrado para asignar ID
       sale.id = await asingDocumentId(db, COLLECTIONS.SALES, { date: -1 });
 

@@ -9,4 +9,11 @@ input SaleInput {
     platform: String
     totalOperation: String
     active: Boolean
+    description: [SaleDescriptionInput]
+}
+
+input SaleDescriptionInput {
+    name: String
+    qty: String
+    price: String
 }

@@ -1,5 +1,4 @@
 
-
 type Sale {
     id: ID
     operationId: String
@@ -12,4 +11,11 @@ type Sale {
     platform: String
     totalOperation: String
     active: Boolean
+    description: [SaleDescription]
+}
+
+type SaleDescription {
+    name: String
+    qty: String
+    price: String
 }
