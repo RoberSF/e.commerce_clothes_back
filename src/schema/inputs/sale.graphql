@@ -1,7 +1,7 @@
 input SaleInput {
     operationId: String
     emailAdress: String
-    clientName: String
+    name: String
     clientPlatformId: String
     url: String
     date: String
