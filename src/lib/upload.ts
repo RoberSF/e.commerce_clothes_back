@@ -153,8 +153,8 @@ export const aws = async (fileName:any, type:any) => {
         let key = `${type}/` + fileName
 
         AWS.config.update({
-            accessKeyId: "AKIAJOJUP4HVSBUZGA5A",
-            secretAccessKey: "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",
+            accessKeyId: "",
+            secretAccessKey: "",
             region: 'eu-central-1' 
         });
     
@@ -199,9 +199,9 @@ export const uploadAWS = (params:any, fileName:any ) => {
 export const cloudi = async (fileName:any, type:any) => {
 
     cloudinary.config({ 
-        cloud_name: 'dvjue4lwj', 
-        api_key: '757978864638286', 
-        api_secret: 'bX5Ebo0pG9fCQVxJZyTge5gMJFk' 
+        cloud_name: '', 
+        api_key: '', 
+        api_secret: '' 
       });
 
       const cloudiResult = await cloudinaryUpload(fileName, type)
